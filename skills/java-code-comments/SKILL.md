@@ -448,3 +448,11 @@ java, code comments, javadoc, documentation, class comments, method comments, fi
 
 **Chinese keywords (中文关键词):**
 Java 代码注释, 添加注释, 生成注释, 代码注释, 文档注释, JavaDoc, 类注释, 方法注释, 属性注释, 字段注释, 给代码添加注释, 代码文档, Java 文档, 注释生成, 一句话添加注释, Controller 注释, Service 注释, Mapper 注释, Entity 注释, DTO 注释, 代码注解
+
+## 常见陷阱 (Gotchas)
+
+1. **版本兼容性**：注意框架版本与依赖库的兼容性，不同版本 API 可能有差异
+2. **配置文件格式**：配置文件格式错误是最常见的问题，建议使用编辑器的语法检查
+3. **环境变量**：确保所有必要的环境变量已正确设置，敏感信息不要硬编码
+4. **依赖冲突**：多版本共存时注意依赖冲突，使用 lock 文件锁定版本
+5. **性能陷阱**：大数据量场景下注意性能优化，避免 N+1 查询等常见问题
