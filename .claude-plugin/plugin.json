@@ -1,0 +1,17 @@
+{
+  "name": "java-skills",
+  "version": "1.0.0",
+  "description": "Java Skills is a curated collection of Agent Skills for AI coding agents, part of the [Full Stack Skills](https://github.com/partme-ai/full-stack-skills) ecosystem maintained by [PartMe.AI](https://github.com/partme-ai).",
+  "author": {
+    "name": "PartMeAI",
+    "email": "partmeai@gmail.com"
+  },
+  "homepage": "https://github.com/full-statck-skills/java-skills",
+  "repository": "https://github.com/full-statck-skills/java-skills",
+  "source": "./",
+  "skills": [
+    "./skills/java-code-comments",
+    "./skills/java-conventions",
+    "./skills/java-development-manual"
+  ]
+}
