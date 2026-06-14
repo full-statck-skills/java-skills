@@ -24,7 +24,7 @@ English | [简体中文](./README.zh-CN.md)
 
 **Java Skills** is a curated collection of Agent Skills for AI coding agents, part of the [Full Stack Skills](https://github.com/partme-ai/full-stack-skills) ecosystem maintained by [PartMe.AI](https://github.com/partme-ai).
 
-This package includes **3 skills**. Each skill is a self-contained `SKILL.md` file that AI agents load on-demand.
+This package includes **5 skills**. Each skill is a self-contained `SKILL.md` file that AI agents load on-demand.
 
 ## 📦 Install
 
@@ -38,13 +38,15 @@ Or install specific skills:
 npx skills add full-statck-skills/java-skills --skill <skill-name>
 ```
 
-## 🎯 Skills (3)
+## 🎯 Skills (5)
 
 | Skill | Description |
 |-------|-------------|
-| `java-code-comments` | | |
+| `java-code-comments` | Java code commenting conventions and best practices |
 | `java-conventions` | 统一 Java 项目编码规范与注释规范（SLF4J+Lombok 日志、Bean Lombok 注解选择、判空 Objects/Optional、工具类优先级 Spring→Apache Commons→Hutool→Guava、复杂... |
-| `java-development-manual` | | |
+| `java-development-manual` | Java development manual and guidelines |
+| `unirest-java-3` | Unirest 3.x HTTP client for Java 8+ with Apache HttpClient, built-in GSON, per-request proxy, mocking, caching, and connection pool tuning |
+| `unirest-java-4` | Unirest 4.x HTTP client for Java 11+ with java.net.http, SSE, WebSocket, HTTP/2, ProxySelector, mocking, caching, and modular JSON support |
 
 ## 🤖 Supported Agents
 

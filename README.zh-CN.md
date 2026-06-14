@@ -24,7 +24,7 @@
 
 **Java 技能** 是一组 AI 编码智能体技能，属于 [Full Stack Skills](https://github.com/partme-ai/full-stack-skills) 生态，由 [PartMe.AI](https://github.com/partme-ai) 维护。
 
-本包包含 **3 个技能**。每个技能是一个独立的 `SKILL.md` 文件，AI 智能体按需加载。
+本包包含 **5 个技能**。每个技能是一个独立的 `SKILL.md` 文件，AI 智能体按需加载。
 
 ## 📦 安装
 
@@ -38,13 +38,15 @@ npx skills add full-statck-skills/java-skills
 npx skills add full-statck-skills/java-skills --skill <skill-name>
 ```
 
-## 🎯 技能列表 (3)
+## 🎯 技能列表 (5)
 
 | 技能 | 描述 |
 |------|------|
-| `java-code-comments` | | |
+| `java-code-comments` | Java 代码注释规范与最佳实践 |
 | `java-conventions` | 统一 Java 项目编码规范与注释规范（SLF4J+Lombok 日志、Bean Lombok 注解选择、判空 Objects/Optional、工具类优先级 Spring→Apache Commons→Hutool→Guava、复杂... |
-| `java-development-manual` | | |
+| `java-development-manual` | Java 开发手册与指南 |
+| `unirest-java-3` | Unirest 3.x HTTP 客户端，基于 Apache HttpClient，支持 Java 8+，内置 GSON，支持每请求代理、Mock 测试、缓存和连接池调优 |
+| `unirest-java-4` | Unirest 4.x HTTP 客户端，基于 java.net.http，支持 Java 11+，SSE、WebSocket、HTTP/2、ProxySelector、Mock 测试、缓存和模块化 JSON 支持 |
 
 ## 🤖 支持的智能体
 
