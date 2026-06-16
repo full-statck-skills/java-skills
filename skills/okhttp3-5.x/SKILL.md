@@ -1,5 +1,5 @@
 ---
-name: okhttp3-5
+name: okhttp3-5.x
 description: OkHttp 5.x HTTP client for Java/JVM 8+ and Android 5+. Use when making HTTP/HTTPS requests, building REST API clients, implementing connection pooling, response caching, request/response interceptors, certificate pinning, event monitoring, WebSocket connections, SSE consumption, or configuring TLS/cipher suites. Covers OkHttp 5.4.0 with HTTP/2, transparent GZIP, Fast Fallback (Happy Eyeballs), MockWebServer for testing, and GraalVM Native Image support.
 ---
 

@@ -24,7 +24,7 @@ English | [简体中文](./README.zh-CN.md)
 
 **Java Skills** is a curated collection of Agent Skills for AI coding agents, part of the [Full Stack Skills](https://github.com/partme-ai/full-stack-skills) ecosystem maintained by [PartMe.AI](https://github.com/partme-ai).
 
-This package includes **5 skills**. Each skill is a self-contained `SKILL.md` file that AI agents load on-demand.
+This package includes **6 skills**. Each skill is a self-contained `SKILL.md` file that AI agents load on-demand.
 
 ## 📦 Install
 
@@ -38,7 +38,7 @@ Or install specific skills:
 npx skills add full-statck-skills/java-skills --skill <skill-name>
 ```
 
-## 🎯 Skills (5)
+## 🎯 Skills (6)
 
 | Skill | Description |
 |-------|-------------|
@@ -47,6 +47,7 @@ npx skills add full-statck-skills/java-skills --skill <skill-name>
 | `java-development-manual` | Java development manual and guidelines |
 | `unirest-java-3` | Unirest 3.x HTTP client for Java 8+ with Apache HttpClient, built-in GSON, per-request proxy, mocking, caching, and connection pool tuning |
 | `unirest-java-4` | Unirest 4.x HTTP client for Java 11+ with java.net.http, SSE, WebSocket, HTTP/2, ProxySelector, mocking, caching, and modular JSON support |
+| `okhttp3-5.x` | OkHttp 5.x HTTP client for Java/JVM 8+ and Android 5+ with HTTP/2, transparent GZIP, Fast Fallback, MockWebServer, and GraalVM Native Image support |
 
 ## 🤖 Supported Agents
 
