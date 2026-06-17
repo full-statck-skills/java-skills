@@ -27,6 +27,21 @@
     "./skills/ddd4j-jackson",
     "./skills/ddd4j-mybatis",
     "./skills/ddd4j-validation",
-    "./skills/ddd4j-satoken"
+    "./skills/ddd4j-satoken",
+    "./skills/guava",
+    "./skills/hutool",
+    "./skills/lombok",
+    "./skills/mapstruct",
+    "./skills/junit-mockito",
+    "./skills/jackson",
+    "./skills/mybatis",
+    "./skills/mybatis-plus",
+    "./skills/redis-redisson",
+    "./skills/kafka",
+    "./skills/easyexcel",
+    "./skills/xxl-job",
+    "./skills/seata",
+    "./skills/caffeine",
+    "./skills/commons"
   ]
 }
