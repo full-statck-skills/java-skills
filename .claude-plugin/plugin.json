@@ -12,6 +12,16 @@
   "skills": [
     "./skills/java-code-comments",
     "./skills/java-conventions",
-    "./skills/java-development-manual"
+    "./skills/java-development-manual",
+    "./skills/unirest-java-3",
+    "./skills/unirest-java-4",
+    "./skills/okhttp3-5.x",
+    "./skills/sa-token",
+    "./skills/sa-token-advanced",
+    "./skills/sa-token-sso",
+    "./skills/sa-token-oauth2",
+    "./skills/sa-token-micro",
+    "./skills/sa-token-api-security",
+    "./skills/sa-token-integration"
   ]
 }
