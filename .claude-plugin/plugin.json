@@ -22,6 +22,11 @@
     "./skills/sa-token-oauth2",
     "./skills/sa-token-micro",
     "./skills/sa-token-api-security",
-    "./skills/sa-token-integration"
+    "./skills/sa-token-integration",
+    "./skills/ddd4j-core",
+    "./skills/ddd4j-jackson",
+    "./skills/ddd4j-mybatis",
+    "./skills/ddd4j-validation",
+    "./skills/ddd4j-satoken"
   ]
 }
