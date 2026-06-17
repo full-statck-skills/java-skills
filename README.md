@@ -24,7 +24,7 @@ English | [简体中文](./README.zh-CN.md)
 
 **Java Skills** is a curated collection of Agent Skills for AI coding agents, part of the [Full Stack Skills](https://github.com/partme-ai/full-stack-skills) ecosystem maintained by [PartMe.AI](https://github.com/partme-ai).
 
-This package includes **6 skills**. Each skill is a self-contained `SKILL.md` file that AI agents load on-demand.
+This package includes **13 skills**. Each skill is a self-contained `SKILL.md` file that AI agents load on-demand.
 
 ## 📦 Install
 
@@ -38,7 +38,7 @@ Or install specific skills:
 npx skills add full-statck-skills/java-skills --skill <skill-name>
 ```
 
-## 🎯 Skills (6)
+## 🎯 Skills (13)
 
 | Skill | Description |
 |-------|-------------|
@@ -48,6 +48,13 @@ npx skills add full-statck-skills/java-skills --skill <skill-name>
 | `unirest-java-3` | Unirest 3.x HTTP client for Java 8+ with Apache HttpClient, built-in GSON, per-request proxy, mocking, caching, and connection pool tuning |
 | `unirest-java-4` | Unirest 4.x HTTP client for Java 11+ with java.net.http, SSE, WebSocket, HTTP/2, ProxySelector, mocking, caching, and modular JSON support |
 | `okhttp3-5.x` | OkHttp 5.x HTTP client for Java/JVM 8+ and Android 5+ with HTTP/2, transparent GZIP, Fast Fallback, MockWebServer, and GraalVM Native Image support |
+| `sa-token` | Sa-Token core authentication framework — login, permission/role auth, annotation auth, route interceptor, session management, token configuration, front-back separation |
+| `sa-token-advanced` | Sa-Token advanced security — secondary auth (2FA), account banning (full/category/tiered), identity switching, multi-account systems, global listener & filter, password encryption, HTTP Basic/Digest |
+| `sa-token-sso` | Sa-Token SSO single sign-on — 3 modes (same-domain cookie, cross-domain redirect, cross-domain HTTP ticket), SSO-Server setup, SSO-Client integration, single logout |
+| `sa-token-oauth2` | Sa-Token OAuth2.0 server — 4 grant types (authorization code, implicit, password, client credentials), Scope control, OIDC support, custom grant_type |
+| `sa-token-micro` | Sa-Token microservice auth — Same-Token inter-service isolation, SpringCloud Gateway unified auth, Feign/Dubbo/gRPC RPC auth, distributed session |
+| `sa-token-api-security` | Sa-Token API security — API parameter signing (anti-tamper/anti-replay), API Key managed partial authorization, temporary token (short-lived links) |
+| `sa-token-integration` | Sa-Token integration extensions — JWT (Simple/Mixin/Stateless), Redis persistence, Alone-Redis isolation, AOP annotation auth, Quick-Login, template engine integration |
 
 ## 🤖 Supported Agents
 

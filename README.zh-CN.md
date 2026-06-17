@@ -24,7 +24,7 @@
 
 **Java 技能** 是一组 AI 编码智能体技能，属于 [Full Stack Skills](https://github.com/partme-ai/full-stack-skills) 生态，由 [PartMe.AI](https://github.com/partme-ai) 维护。
 
-本包包含 **6 个技能**。每个技能是一个独立的 `SKILL.md` 文件，AI 智能体按需加载。
+本包包含 **13 个技能**。每个技能是一个独立的 `SKILL.md` 文件，AI 智能体按需加载。
 
 ## 📦 安装
 
@@ -38,7 +38,7 @@ npx skills add full-statck-skills/java-skills
 npx skills add full-statck-skills/java-skills --skill <skill-name>
 ```
 
-## 🎯 技能列表 (6)
+## 🎯 技能列表 (13)
 
 | 技能 | 描述 |
 |------|------|
@@ -48,6 +48,13 @@ npx skills add full-statck-skills/java-skills --skill <skill-name>
 | `unirest-java-3` | Unirest 3.x HTTP 客户端，基于 Apache HttpClient，支持 Java 8+，内置 GSON，支持每请求代理、Mock 测试、缓存和连接池调优 |
 | `unirest-java-4` | Unirest 4.x HTTP 客户端，基于 java.net.http，支持 Java 11+，SSE、WebSocket、HTTP/2、ProxySelector、Mock 测试、缓存和模块化 JSON 支持 |
 | `okhttp3-5.x` | OkHttp 5.x HTTP 客户端，支持 Java/JVM 8+ 和 Android 5+，HTTP/2、透明 GZIP、Fast Fallback、MockWebServer、GraalVM Native Image 支持 |
+| `sa-token` | Sa-Token 核心权限认证框架 — 登录认证、权限/角色认证、注解鉴权、路由拦截鉴权、Session 会话管理、框架配置、前后端分离 |
+| `sa-token-advanced` | Sa-Token 高级安全特性 — 二级认证、账号封禁(全/分类/阶梯)、身份切换、多账号体系(StpUserUtil/StpKit)、全局侦听器与过滤器、密码加密、Http Basic/Digest |
+| `sa-token-sso` | Sa-Token SSO 单点登录 — 三种模式(同域Cookie/跨域重定向/跨域Http ticket)、Server 搭建、Client 接入、单点注销、前后端分离 H5 方案 |
+| `sa-token-oauth2` | Sa-Token OAuth2.0 服务端 — 四种授权模式(授权码/隐式/密码/客户端凭证)、Scope 权限控制、OIDC、自定义 grant_type |
+| `sa-token-micro` | Sa-Token 微服务鉴权 — Same-Token 内部服务隔离、SpringCloud Gateway 统一鉴权、Feign/Dubbo/gRPC 鉴权、分布式 Session |
+| `sa-token-api-security` | Sa-Token API 安全 — API 参数签名(防篡改防重放)、API Key 部分授权管理、临时 Token 短效链接 |
+| `sa-token-integration` | Sa-Token 集成扩展 — JWT 三种模式(Simple/Mixin/Stateless)、Redis 持久化、Alone-Redis 缓存隔离、AOP 注解鉴权、Quick-Login 快速登录、模板引擎集成 |
 
 ## 🤖 支持的智能体
 
