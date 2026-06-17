@@ -44,10 +44,8 @@ public class JacksonConfig {
         return builder -> builder
             .simpleDateFormat("yyyy-MM-dd HH:mm:ss")
             .serializationInclusion(JsonInclude.Include.NON_NULL)
-            .featuresToEnable(
-                SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, // false
-                MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES // true
-            );
+            .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .featuresToEnable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES);
     }
 }
 
