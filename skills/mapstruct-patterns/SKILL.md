@@ -1,88 +1,119 @@
 ---
 name: mapstruct-patterns
 description: |
-  MapStruct Bean 映射技能。覆盖 Mapper 接口定义规范、类型不匹配转换策略、与 Lombok 配合(annotationProcessorPaths)、Spring Component模式注入、嵌套对象映射、反向映射、表达式映射、defaultValue与constant。
-  纠正 LLM 最常见的错误：手写 BeanUtils.copyProperties（运行时反射）而非用 MapStruct（编译期生成）。
+  MapStruct 最佳实践模式。从官方 Reference Guide 提炼，覆盖 Mapper 三种定义方式(接口/抽象类/default方法)、Spring 注入策略(CONSTRUCTOR推荐/SETTER解决循环依赖)、嵌套映射模式(显式子方法 > dot notation 一次性配置)、@Qualifier > @Named 的安全选择、Lombok 集成规则、@MappingComposition 谨慎使用。
+  纠正 LLM 最常见的错误：用反射 BeanUtils 而非编译期 MapStruct、嵌套映射全写在一个方法、不知 SETTER 解决循环依赖。
 license: Apache-2.0
 ---
 
-# MapStruct Bean 映射
+# MapStruct 最佳实践模式
 
-> 编码 MapStruct 的使用规则。LLM 会用运行时反射方式做 Bean 映射，编译期生成才是正确方案。
+> 来源: [MapStruct Reference Guide](https://mapstruct.org/documentation/stable/reference/html/) | GitHub: [mapstruct/mapstruct](https://github.com/mapstruct/mapstruct)
 
 ## Capability Boundaries
 
 ### ✅ Strong Suits
-1. **基础映射** — @Mapping source/target/dateFormat/numberFormat
-2. **嵌套映射** — 对象嵌套的自动展开 vs 手动 qualifiedByName
-3. **类型转换** — 日期/数字/枚举/String 互转
-4. **Lombok 配合** — annotationProcessorPaths 配置
-5. **Spring注入** — componentModel="spring"
-6. **表达式映射** — expression 处理复杂转换
-7. **defaultValue/constant** — 默认值和常量
+1. **Mapper 三种定义方式** — 接口(标准) / 抽象类(需要字段) / default方法(自定义逻辑)
+2. **Spring 注入策略** — CONSTRUCTOR(推荐，测试友好) / SETTER(解决循环依赖)
+3. **嵌套映射模式** — 显式子方法封装(推荐) > dot notation 一次性配置
+4. **@Qualifier vs @Named** — 自定义 @Qualifier 注解(IDE重构安全) > @Named(字符串不安全)
+5. **Lombok 集成** — annotationProcessorPaths 中 Lombok 必须在 MapStruct 之前
+6. **@MappingComposition** — 组合注解复用，但 error messages 不成熟需谨慎
 
 ### ❌ Out of Scope
-1. DDD4J 使用 Dozer 不是 MapStruct → **ddd4j-core**（DDD4J项目中Doozer已注入）
-2. 运行时动态映射 → 用 MapStruct 编译期生成，不是反射
+1. 运行时动态 Bean 映射(Orika/Dozer) → MapStruct 编译期生成，不是反射
 
-## LLM最常犯的错误
+## 核心模式
 
-| # | 错误 | 正确做法 |
-|---|------|---------|
-| 1 | `BeanUtils.copyProperties(dto, entity)` | MapStruct Mapper 接口，编译期生成代码 |
-| 2 | 手写 `entity.setName(dto.getName()); entity.setAge(dto.getAge())` | 一个 @Mapping 搞定，30个字段也不怕 |
-| 3 | Lombok 和 MapStruct 冲突编译失败 | Lombok 放在 annotationProcessorPaths 最前面 |
-| 4 | 日期字段 String ↔ LocalDateTime 手动转换 | `@Mapping(dateFormat = "yyyy-MM-dd HH:mm:ss")` |
-| 5 | 嵌套对象映射不了 | `@Mapping(target = "address.street", source = "addr")` |
-| 6 | 不知道反向映射 | `@InheritInverseConfiguration` 自动反向 |
-
-## 核心规则速查
+### 模式 1: Spring 注入策略选择
 
 ```java
-// ✅ Mapper 定义
-@Mapper(componentModel = "spring")  // Spring 管理的单例
+// ✅ 推荐：CONSTRUCTOR 注入(测试友好，不依赖Spring容器)
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+public interface UserMapper { UserVO toVO(User e); }
+
+// ✅ 循环依赖：SETTER注入
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.SETTER,
+        uses = { OrderMapper.class })
+public interface UserMapper { ... }
+
+// ✅ 全局默认配置(避免每个接口重复)
+@MapperConfig(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+public interface CentralConfig {}
+@Mapper(config = CentralConfig.class) public interface UserMapper { ... }
+```
+
+### 模式 2: 嵌套映射的正确方式
+
+```java
+// ❌ 反模式：全写在顶层(重复配置，难以维护)
+@Mapping(target = "address.street", source = "home.street")
+@Mapping(target = "address.city", source = "home.city")
+UserDTO toDTO(User e);
+
+// ✅ 模式：显式子方法(单一配置点，可复用)
+@Mapper
 public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
-
-    @Mapping(target = "createTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
-    @Mapping(target = "status", expression = "java(dto.getStatus() == 1)")
-    @Mapping(target = "fullName", source = "name")
-    UserVO toVO(User entity);
-
-    @InheritInverseConfiguration  // 自动反向映射
-    User toEntity(UserVO vo);
-
-    List<UserVO> toVOList(List<User> entities);  // List 自动映射
+    UserDTO toDTO(User e);               // MapStruct 自动检测嵌套类型
+    AddressDTO toAddressDTO(Address e);   // 子映射方法 — 唯一配置处
 }
 
-// ✅ 使用
-@Autowired UserMapper userMapper;
-UserVO vo = userMapper.toVO(userEntity);
-List<UserVO> voList = userMapper.toVOList(users);
+// ✅ dot notation + 子方法组合(局部覆盖)
+@Mapping(target = "address.zip", constant = "00000")  // 常量覆盖
+@Mapping(target = "address", source = "homeAddr")     // 其余走子方法
+UserDTO toDTO(User e);
+```
 
-// ✅ Maven 配置(Lombok 配合)
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-compiler-plugin</artifactId>
-    <configuration>
-        <annotationProcessorPaths>
-            <path><groupId>org.projectlombok</groupId>  <!-- Lombok 必须第一个 -->
-                <artifactId>lombok</artifactId></path>
-            <path><groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct-processor</artifactId></path>
-        </annotationProcessorPaths>
-    </configuration>
-</plugin>
+### 模式 3: @Qualifier > @Named
+
+```java
+// ✅ 推荐：自定义 @Qualifier(IDE重构安全)
+@Qualifier @Target(ElementType.METHOD) @Retention(RetentionPolicy.CLASS)
+public @interface ToUpperCase {}
+@ToUpperCase default String toUpper(String s) { return s.toUpperCase(); }
+@Mapping(target = "name", qualifiedBy = ToUpperCase.class)
+UserDTO toDTO(User e);
+
+// ⚠️ 可用但不推荐：@Named(字符串依赖，IDE不能自动重命名)
+@Named("toUpper") default String toUpper(String s) { return s.toUpperCase(); }
+@Mapping(target = "name", qualifiedByName = "toUpper")  // 字符串引用
+```
+
+### 模式 4: 循环依赖的 Spring 配置
+
+```java
+// 场景: UserMapper → OrderMapper → UserMapper
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.SETTER,
+        uses = { OrderMapper.class })  // ← SETTER是关键
+public interface UserMapper {
+    @Mapping(target = "orders", source = "orderList")
+    UserDTO toDTO(User entity);
+}
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.SETTER,
+        uses = { UserMapper.class })
+public interface OrderMapper { ... }
+```
+
+### 模式 5: 抽象类 Mapper
+
+```java
+@Mapper
+public abstract class UserMapper {
+    @Autowired protected PasswordEncoder encoder;  // 可注入字段
+    @Mapping(target = "encodedPwd", expression = "java(encoder.encode(dto.getPassword()))")
+    public abstract UserVO toVO(UserDTO dto);
+    protected String formatDate(LocalDateTime dt) { return dt.format(FORMATTER); } // 自定义方法
+}
 ```
 
 ## Gotchas
-1. **Lombok 的 annotationProcessor 必须排在 MapStruct 前面** — 否则编译报错
-2. **MapStruct 编译期生成实现类** — 不生成时检查 target/generated-sources/annotations
-3. **source 和 target 字段名不一致必须指定 @Mapping** — 否则静默跳过
-4. **嵌套对象默认使用同名的嵌套 Mapper** — 没有同名的需要手动 qualifiedByName
-5. **List 映射自动复用单个映射方法** — 不需要额外配置
-6. **componentModel="spring" 是单例** — 不要在 Mapper 中维护状态
-7. **@Mapping 的 expression 是 Java 代码字符串** — 复杂逻辑提取为方法用 qualifiedByName
+1. **Lombok 的 annotationProcessor 必须在 MapStruct 之前** — 否则编译期找不到 getter/setter
+2. **CONSTRUCTOR 注入遇循环依赖会编译失败** — 改为 SETTER
+3. **dot notation 不创建子映射方法** — 嵌套字段逻辑重复时用显式子方法
+4. **MapStruct 编译期生成，性能等同手写代码** — 不是反射
+5. **@Named 字符串引用不安全** — IDE重构不会自动更新，用自定义 @Qualifier
+6. **CollectionMappingStrategy.DEFAULT 不要显式使用** — 仅作内部区分
+7. **Mapper 接口中 default 方法优先于生成代码** — 可用于自定义转换逻辑
 
 ## Data Privacy
 本技能不收集、存储或传输任何用户数据。
