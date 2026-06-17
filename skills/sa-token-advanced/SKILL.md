@@ -11,6 +11,23 @@ license: Apache-2.0
 
 基于 `sa-token-doc/up/`深入 + `fun/`高级 + `arch/`架构文档。
 
+## 适用场景
+
+当用户需要以下场景时，激活此技能：
+- **敏感操作二次验证** — 删除仓库/修改密码等操作需要再次确认身份
+- **账号违规处罚** — 按服务维度封禁（只禁言不禁购）、按违规等级处罚
+- **后台模拟用户** — 客服人员需要临时以用户身份操作
+- **多套账号体系** — 系统中同时存在User和Admin两套独立的账号表
+- **全局事件记录** — 记录所有用户的登录/注销/踢人/封禁等操作日志
+- **密码加密存储** — 用户密码的安全存储与验证
+
+## Workflow
+
+Step 1. **确定需求** — 选择二级认证/封禁/多账号/侦听器等具体功能
+Step 2. **编写代码** — 根据API文档实现对应功能
+Step 3. **配置注册** — 注册侦听器、配置过滤器、定义多账号体系
+Step 4. **测试验证** — 验证功能行为符合预期
+
 ## Capability Boundaries
 
 ### ✅ Strong Suits
@@ -102,6 +119,9 @@ A: 登录、注销、踢下线、顶下线、封禁、解封、二级认证开�
 
 **Q: SaServletFilter和SaInterceptor怎么选？**
 A: 需要过滤静态资源或设置安全响应头选SaServletFilter。只需要Controller层鉴权选SaInterceptor。两者可以同时使用。
+
+**Q: 如何自定义鉴权注解？**
+A: 实现 `SaAnnotationStrategy` 的自定义注解处理器，可以参考官方demo中的 `custom_annotation` 包。
 
 ## Gotchas
 1. **StpInterface可实现 `isDisabled()` 自定义封禁逻辑** — 默认封禁在内存中，重启丢失

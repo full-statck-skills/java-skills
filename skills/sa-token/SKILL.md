@@ -38,6 +38,26 @@ Sa-Token 是一个轻量级 Java 权限认证框架，核心包零依赖，提�
 5. API 签名/API Key/临时 Token → **sa-token-api-security**
 6. JWT 集成/Redis 持久化/模板引擎 → **sa-token-integration**
 
+## 适用场景
+
+当用户需要以下场景时，激活此技能：
+- **新项目集成权限认证** — SpringBoot项目引入Sa-Token，配置StpInterface，实现登录/权限校验
+- **现有项目添加鉴权** — 为已有接口添加登录校验/权限校验/角色校验
+- **配置路由拦截器** — 统一拦截所有请求，按模块划分不同鉴权规则
+- **使用注解鉴权** — 使用@SaCheckLogin/@SaCheckPermission等注解
+- **前后端分离适配** — 无Cookie环境下Token的传递与校验
+- **调试与排错** — 排查NotLoginException各类场景值、Token有效期问题
+
+## Workflow
+
+Step 1. **引入依赖** — 添加 `sa-token-spring-boot-starter` 依赖（根据SpringBoot版本选择）
+Step 2. **配置框架** — application.yml 配置 token 名称、有效期、风格等
+Step 3. **实现 StpInterface** — 自定义权限加载器，返回权限码和角色集合
+Step 4. **登录认证** — 调用 `StpUtil.login(id)` 完成会话登录
+Step 5. **权限校验** — 使用 StpUtil 方法或注解进行权限/角色校验
+Step 6. **路由拦截** — SaInterceptor + SaRouter 实现全局路由鉴权
+Step 7. **集成测试** — 验证登录/注销/权限校验/注解鉴权全流程
+
 ## StpUtil 核心 API 速查
 
 ```java

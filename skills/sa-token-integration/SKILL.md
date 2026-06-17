@@ -11,6 +11,24 @@ license: Apache-2.0
 
 基于 `sa-token-doc/plugin/` 集成类文档。
 
+## 适用场景
+
+当用户需要以下场景时，激活此技能：
+- **JWT无状态认证** — 将登录信息编码到Token中，减少Redis查询，适合高并发场景
+- **分布式Session共享** — 多实例部署时需要共享会话数据
+- **Redis缓存隔离** — 将Sa-Token的Redis与业务Redis物理分开
+- **Service层注解鉴权** — 在Service层（非Controller）使用@SaCheckLogin等注解
+- **快速搭建登录页面** — 开发环境或内管系统零代码登录页
+- **模板引擎鉴权标签** — Thymeleaf/Freemarker页面中控制按钮显隐
+
+## Workflow
+
+Step 1. **确定集成需求** — 选择JWT/Redis/AOP/模板等模块
+Step 2. **引入依赖** — 添加对应Maven/Gradle依赖
+Step 3. **配置参数** — 配置jwt-secret-key/Redis连接/Alone-Redis等
+Step 4. **注入实现** — 注入StpLogic、注册过滤器、配置模板引擎
+Step 5. **验证测试** — 确认集成生效，测试核心功能是否正常
+
 ## Capability Boundaries
 
 ### ✅ Strong Suits
