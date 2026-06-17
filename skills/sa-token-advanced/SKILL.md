@@ -11,6 +11,32 @@ license: Apache-2.0
 
 基于 `sa-token-doc/up/`深入 + `fun/`高级 + `arch/`架构文档。
 
+## Capability Boundaries
+
+### ✅ Strong Suits
+1. **二级认证** — `openSafe()`/`checkSafe()`/@`SaCheckSafe` 敏感操作二次验证
+2. **账号封禁** — 全封禁/分类封禁(comment/order/shop)/阶梯封禁(level)
+3. **身份切换** — `switchTo()`/`endSwitch()` 模拟其他账号
+4. **多账号认证** — StpUserUtil模式 + StpKit门面模式，多套账号体系
+5. **全局侦听器** — SaTokenListener接口(登录/注销/踢人/封禁等10+事件)
+6. **全局过滤器** — SaServletFilter + SaReactorFilter，统一安全头设置
+7. **密码加密** — 5种算法：MD5/SHA/AES/RSA/BCrypt + TOTP验证码
+8. **会话查询** — SaTerminalInfo终端列表 + searchTokenValue/TokenSession/Session
+9. **Http Basic/Digest** — @SaCheckHttpBasic / @SaCheckHttpDigest
+10. **防火墙** — IP黑白名单 + 请求频率限制
+11. **自定义注解** — 组合注解/自定义鉴权注解
+
+### ⚠️ Requirements
+1. 所有功能都基于 `sa-token-core`，部分功能需要登录后才能使用
+2. 全局侦听器需要注册到Spring容器（@Component或手动注册）
+3. 多账号认证需要自行定义账号体系名称
+
+### ❌ Out of Scope
+1. 基础登录/权限/注解鉴权 → **sa-token**
+2. SSO单点登录 → **sa-token-sso**
+3. OAuth2.0 服务端 → **sa-token-oauth2**
+4. 微服务鉴权 → **sa-token-micro**
+
 ## 参考文档
 
 | 主题 | 文件 | 来源 |
@@ -25,33 +51,68 @@ license: Apache-2.0
 ## 核心 API 速查
 
 ```java
-// 二级认证
+// === 二级认证 ===
 StpUtil.openSafe("update-password");         // 开启(默认120秒)
 StpUtil.checkSafe("update-password");         // 校验
 @SaCheckSafe("update-password")               // 注解
 
-// 账号封禁
+// === 账号封禁 ===
 StpUtil.disable(10001, "comment", 200);       // 分类封禁
 StpUtil.disableLevel(10001, "comment", 2, 200); // 阶梯封禁
 StpUtil.untieDisable(10001, "comment");       // 解封
+@SaCheckDisable("comment")                     // 注解
 
-// 身份切换
-StpUtil.switchTo(10001, () -> { ... });      // Lambda作用域切换
+// === 身份切换 ===
+StpUtil.switchTo(10001);                       // 切换到其他账号
+StpUtil.switchTo(10001, () -> { ... });        // Lambda作用域切换
 
-// 多账号
+// === 多账号 ===
 StpUserUtil.login(10001);                     // User体系
 StpKit.admin.login(10001);                    // StpKit门面
 
-// 密码加密
+// === 密码加密 ===
 SaSecureUtil.md5("123456");
 SaSecureUtil.aesEncrypt(key, "data");
+SaSecureUtil.rsaEncryptByPublic(publicKey, text);
 SaTotpUtil.generateCode("secret");
+SaSecureUtil.bCryptPasswordEncoder("123456");
 
-// 全局侦听器
+// === 全局侦听器 ===
 SaTokenEventCenter.registerListener(listener);
+@Component class MyListener extends SaTokenListenerForSimple { ... }
+
+// === 会话查询 ===
+StpUtil.searchTokenValue(keyword, start, size, sort);
+StpUtil.searchSessionId(keyword, start, size, sort);
 ```
 
+## FAQ
+
+**Q: 二级认证和普通登录有什么区别？**
+A: 普通登录是第一次身份验证。二级认证是在已经登录的基础上，对敏感操作进行第二次验证（如修改密码、删除仓库）。两者独立。
+
+**Q: 账号封禁的三种级别怎么用？**
+A: 简单违规用全封禁。按服务维度违规用分类封禁（如只禁言不禁购）。需要梯度处罚用阶梯封禁（如首次违规level1，多次违规level3）。
+
+**Q: StpUserUtil和StpKit有什么区别？**
+A: StpUserUtil是内置的User账号体系。StpKit门面模式可以自定义任意多的账号体系（如User、Admin、Teacher），更加灵活。
+
+**Q: 全局侦听器能监听到哪些事件？**
+A: 登录、注销、踢下线、顶下线、封禁、解封、二级认证开启/关闭、Session创建/销毁、Token续期，共11种事件。
+
+**Q: SaServletFilter和SaInterceptor怎么选？**
+A: 需要过滤静态资源或设置安全响应头选SaServletFilter。只需要Controller层鉴权选SaInterceptor。两者可以同时使用。
+
 ## Gotchas
-1. StpInterface 可实现 `isDisabled()` 自定义封禁逻辑
-2. 多账号体系可在注解中通过 `type` 属性指定
-3. 全局侦听器建议使用 `SaTokenListenerForSimple` 简化实现
+1. **StpInterface可实现 `isDisabled()` 自定义封禁逻辑** — 默认封禁在内存中，重启丢失
+2. **多账号体系可在注解中通过 `type` 属性指定** — 如 `@SaCheckLogin(type = "user")`
+3. **全局侦听器建议使用 `SaTokenListenerForSimple` 简化实现** — 只重写需要的方法
+4. **二级认证默认有效期120秒** — 可根据业务调整
+5. **阶梯封禁的level值越大代表封禁越严重** — `checkDisableLevel(3)` 表示level≥3才阻止
+6. **switchTo的Lambda方式比手动endSwitch更安全** — 不会忘记恢复身份
+7. **全局过滤器设置安全响应头时要注意浏览器兼容性**
+8. **Http Basic认证的账号密码在网络传输中是明文** — 需配合HTTPS使用
+
+## Data Privacy
+
+本技能不收集、存储或传输任何用户数据。所有代码示例仅供本地开发参考。
