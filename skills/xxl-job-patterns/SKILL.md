@@ -1,71 +1,161 @@
 ---
 name: xxl-job-patterns
 description: |
-  XXL-JOB 分布式任务调度技能。覆盖调度中心vs执行器架构、GLUE模式vs Bean模式选择、分片广播策略、失败重试与告警配置、任务参数传递、日志查看与清理。
-  当用户需要Java分布式定时任务、替代@Scheduled时使用。
+  XXL-JOB 最佳实践模式。基于 hiwepy/xxljob-spring-boot-starter 定制封装，覆盖 @XxlJobCron 注解替代原生 @XxlJob(代码即配置/cron写在代码里/启动时自动注册到admin)、XxlJobTemplate 编程式任务管理(CRUD/启停/触发/session自动续期)、执行器自动配置(Unirest SSL/端口兜底/Nacos适配)、Micrometer指标集成、v2/v3双版本兼容。
+  纠正 LLM 误用：用 @Scheduled 替代分布式调度、不知道 XxlJobTemplate 的编程式管理、不知道 @XxlJobCron 的 selfStarting 自动注册模式。
 license: Apache-2.0
 ---
 
-# XXL-JOB 分布式任务调度
+# XXL-JOB 最佳实践模式
 
-> 编码 XXL-JOB 的使用规则。LLM 用 @Scheduled 做定时任务(单机/无法管理/无监控)，不知道分布式调度方案。
+> 基于 [hiwepy/xxljob-spring-boot-starter](https://github.com/hiwepy/xxljob-spring-boot-starter)（Spring Boot Starter 封装）
 
 ## Capability Boundaries
 
 ### ✅ Strong Suits
-1. **架构** — 调度中心(admin)+执行器(executor)
-2. **GLUE vs Bean模式** — GLUE(IDE在线编辑) vs Bean(本地代码)
-3. **分片广播** — 同一个任务在多台执行器同时运行，用分片参数区分
-4. **路由策略** — 第一个/最后一个/轮询/随机/故障转移/分片广播
-5. **失败重试** — 重试次数+失败告警邮箱
+1. **@XxlJobCron 注解** — 100%替代@XxlJob，代码即配置（cron/desc/author/selfStarting 全部在代码中）
+2. **启动自动注册** — selfStarting=true 时，执行器启动自动将任务注册到Admin（无需手动在UI创建）
+3. **XxlJobTemplate** — 编程式管理任务（添加/更新/删除/启动/停止/触发），session自动续期
+4. **v2/v3双版本兼容** — Admin版本参数差异(v3用ids[]、v2用id)，自动适配
+5. **Micrometer指标** — 自动采集任务执行次数/成功/失败/耗时，对接Prometheus
+6. **Unirest HTTP客户端** — 自动配置SSL（trust-all）/Cookie管理/超时
 
 ### ❌ Out of Scope
-1. 简单单机定时任务 → @Scheduled 即可
+1. 简单单机定时任务 → @Scheduled
 2. 替代方案：PowerJob(功能更强)、ElasticJob(无中心化)
 
-## LLM最常犯的错误
+## 核心模式
 
-| # | 错误 | 正确做法 |
-|---|------|---------|
-| 1 | `@Scheduled(cron="0 0 2 * * ?")` 单机定时 | XXL-JOB 分布式 + 调度中心管理 |
-| 2 | 不处理重复执行(手动去重) | 路由策略选"第一个"或"一致性HASH" |
-| 3 | 全量处理不分解任务 | 分片广播，每个机器处理一部分 |
-| 4 | 失败不告警 | 配置重试次数+报警邮件 |
-
-## 核心规则速查
+### 模式 1: @XxlJobCron — 代码即配置（推荐）
 
 ```java
-// ✅ Bean模式(标准方式)
+@Slf4j
 @Component
-public class OrderCloseJob {
-    @XxlJob("orderCloseJob")  // 任务名称，与调度中心一致
-    public void execute() {
-        String param = XxlJobHelper.getJobParam();
-        int shardIndex = XxlJobHelper.getShardIndex();
-        int shardTotal = XxlJobHelper.getShardTotal();
-        // 分片处理：每个执行器处理自己的分片
-        closeOrders(shardIndex, shardTotal);
-        XxlJobHelper.handleSuccess("处理完成");
+@RequiredArgsConstructor
+public class CompensationJobHandler {
+    private final AigcTaskCompensationScheduler compensationScheduler;
+
+    // ✅ 一行注解 = @XxlJob + cron + desc + author + selfStarting(自动注册到Admin)
+    @XxlJobCron(value = "compensateStaleTextTasks",
+                cron = "0/30 * * * * ?",
+                desc = "文本回调超时补偿",
+                author = "wandl",
+                selfStarting = true,   // ← 启动时自动注册，无需在Admin UI手动创建
+                failRetryCount = 3,
+                timeout = 30)  // 30秒超时
+    public void compensateStaleTextTasks() {
+        try {
+            compensationScheduler.compensateStaleTextTasks();
+            XxlJobHelper.handleSuccess("compensation completed");
+        } catch (Exception e) {
+            log.error("XXL-Job failed", e);
+            XxlJobHelper.handleFail("failed: " + e.getMessage());
+        }
     }
 }
+```
 
-// ✅ 执行器配置
-xxl.job.admin.addresses=http://localhost:8080/xxl-job-admin
-xxl.job.executor.appname=order-service
-xxl.job.executor.port=9999
+### 模式 2: XxlJobTemplate — 编程式任务管理
 
-// ✅ GLUE模式(Python/JS等在线编写，无需重启)
-// 在调度中心IDE中直接写：XxlJobHelper.log("开始处理");
+```java
+@Service
+public class JobManager {
+    @Autowired XxlJobTemplate xxlJobTemplate;
+
+    // 创建/更新任务(幂等)
+    public void ensureJobRegistered(Long jobGroupId, String handlerName, String cron, String desc) {
+        XxlJobInfo jobInfo = new XxlJobInfo();
+        jobInfo.setJobGroup(jobGroupId.intValue());
+        jobInfo.setExecutorHandler(handlerName);
+        jobInfo.setScheduleConf(cron);
+        jobInfo.setJobDesc(desc);
+        jobInfo.setScheduleType("CRON");
+        jobInfo.setGlueType("BEAN");
+        jobInfo.setAuthor("system");
+        jobInfo.setExecutorRouteStrategy("LEAST_FREQUENTLY_USED");
+        jobInfo.setMisfireStrategy("DO_NOTHING");
+        jobInfo.setExecutorBlockStrategy("COVER_EARLY");
+        jobInfo.setExecutorTimeout(30);
+        jobInfo.setExecutorFailRetryCount(3);
+        xxlJobTemplate.addUniqueJob(jobInfo);  // 幂等：描述相同不重复创建
+    }
+
+    // 手动触发
+    public void triggerJob(Integer jobId, String param) {
+        xxlJobTemplate.triggerJob(jobId, param);
+    }
+
+    // 暂停/恢复
+    public void pauseJob(Integer jobId) { xxlJobTemplate.stopJob(jobId); }
+    public void resumeJob(Integer jobId) { xxlJobTemplate.startJob(jobId); }
+}
+```
+
+### 模式 3: 配置结构
+
+```yaml
+xxl:
+  job:
+    accessToken: xxx                      # 通信Token
+    admin:
+      version: V3_X                       # Admin版本（V2_X / V3_X）
+      addresses: http://xxx:9991/xxl-job-admin
+      username: admin
+      password: xxxxx                     # Admin登录密码
+      cookie:                             # Session管理
+        maximum-size: 1000
+        expire-after-write: 5s
+    executor:
+      enabled: true
+      appname: agent-job-executor         # 执行器名称（与Admin注册一致）
+      title: 智能体 - 任务执行器            # 执行器显示名称
+      ip: 172.16.0.152                    # 执行器IP（多网卡时指定）
+      port: 0                             # 0=自动探测，-1=不启动
+      log-path: /logs/xxl-job/jobhandler
+      log-retention-days: 30
+```
+
+### 模式 4: SLF4J + RequiredArgsConstructor 依赖注入
+
+```java
+// ✅ DDD4J 风格：Lombok + 构造器注入
+@Slf4j
+@Component
+@RequiredArgsConstructor  // final字段自动构造器注入
+public class MyJobHandler {
+    private final OrderService orderService;        // 构造器注入
+    private final NotificationService notifyService;
+
+    @XxlJobCron(value = "closeExpiredOrders", cron = "0 0 2 * * ?",
+                desc = "关闭过期订单", author = "system", selfStarting = true)
+    public void execute() { ... }
+}
+```
+
+### 模式 5: 错误处理统一模式
+
+```java
+@XxlJobCron(...)
+public void execute() {
+    try {
+        // 业务逻辑
+        doWork();
+        XxlJobHelper.handleSuccess("处理完成");  // ← 显式标记成功
+    } catch (Exception e) {
+        log.error("XXL-Job {} failed", getJobName(), e);
+        XxlJobHelper.handleFail("失败: " + e.getMessage());  // ← 显式标记失败
+    }
+}
 ```
 
 ## Gotchas
-1. **任务超时设置** — 防止任务卡死阻塞线程池
-2. **阻塞处理策略** — 单机串行/丢弃后续/覆盖之前，按需选择
-3. **分片广播时每台机器收到相同的 total 不同的 index** — 用 index 取模分配
-4. **GLUE 模式代码在调度中心存储** — 部署执行器时无需发布代码
-5. **调度中心和执行器需要时钟同步** — NTP 保证时间一致性
-6. **@XxlJob 注解的方法不能有参数** — Spring 管理的 Bean 中可以注入依赖
-7. **日志只在调度中心查看** — 执行器本地不持久化日志
+1. **@XxlJobCron(selfStarting=true) 自动注册** — 启动时自动同步到Admin，无需手动在UI创建
+2. **Admin版本参数差异** — v2用`id`，v3用`ids[]`，Starter自动适配
+3. **执行器端口设为0自动探测** — 避免端口冲突，-1不启动执行器
+4. **多网卡指定ip** — 云环境多网卡必须指定`xxl.job.executor.ip`
+5. **session自动续期** — XxlJobTemplate检测session过期自动重新登录
+6. **XxlJobHelper.handleFail显式标记** — 不调用默认视为成功
+7. **@RequiredArgsConstructor注入** — 用final字段+构造器注入，不用@Autowired字段注入
 
 ## Data Privacy
 本技能不收集、存储或传输任何用户数据。
