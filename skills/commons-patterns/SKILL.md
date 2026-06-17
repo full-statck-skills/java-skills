@@ -1,85 +1,158 @@
 ---
 name: commons-patterns
 description: |
-  Apache Commons 核心工具库技能。覆盖 Lang3(StringUtils/ObjectUtils/RandomStringUtils等)/IO(FileUtils/IOUtils/FilenameUtils)/Collections4(集合操作)三件套的常用方法速查、与Guava功能重叠如何选择决策表。
-  当用户手写工具方法替代Apache Commons时使用。避免LLM不知道这些工具类的存在。
+  Apache Commons 最佳实践模式。从官方文档提炼，覆盖 Commons Lang3(StringUtils千面判空/isEmpty vs isBlank/Validate抛NullPointerException迁移)、Commons IO(IOUtils.toString大文件陷阱/FileUtils.lineIterator逐行读模式/FilenameUtils.normalize路径规范化)、Commons Collections4(CollectionUtils.union/intersection/subtract集合运算)。
+  纠正 LLM 误用：混淆 StringUtils.isBlank vs isEmpty、IOUtils.toString 读大文件OOM、不知道 LineIterator 逐行读模式、用 lang 而非 lang3 包名。
 license: Apache-2.0
 ---
 
-# Apache Commons 核心工具库
+# Apache Commons 最佳实践模式
 
-> 编码 Commons 的选择规则。LLM 不知道 Commons 存在，自己写 FileUtils 和 StringUtils。
+> 来源: [Commons Home](https://commons.apache.org/) | [Lang3 User Guide](https://commons.apache.org/proper/commons-lang/) | [IO Description](https://commons.apache.org/proper/commons-io/description.html)
 
 ## Capability Boundaries
 
 ### ✅ Strong Suits
-1. **Commons Lang3** — StringUtils/ObjectUtils/RandomStringUtils/DateUtils/Validate
-2. **Commons IO** — FileUtils/IOUtils/FilenameUtils 文件操作
-3. **Commons Collections4** — 集合工具与增强(MapUtils/SetUtils/IterableUtils)
+1. **StringUtils 判空模式** — isEmpty vs isBlank vs defaultString 精确语义选择
+2. **Commons IO 文件操作** — FileUtils 读写复制 / IOUtils 流操作 / LineIterator 逐行
+3. **Commons Collections4** — CollectionUtils/MultiValuedMap/MapUtils
+4. **RandomStringUtils** — 生成随机字符串(验证码/Token/临时密码)
+5. **Validate** — 参数校验(注意3.0起抛NullPointerException而非IllegalArgumentException)
 
 ### ❌ Out of Scope
-1. 中文特色工具(身份证/拼音/HTTP简约) → **Hutool**
-2. 不可变集合/缓存/EventBus → **Guava**
-3. Bean映射/JSON → **MapStruct**/**Jackson**
+1. 中文特色(身份证/拼音) → **hutool-patterns**
+2. 不可变集合/缓存/EventBus → **guava-patterns**
+3. Bean映射/JSON → **mapstruct-patterns**/**jackson-patterns**
 
 ## Commons vs Guava vs Hutool 选择表
 
-| 场景 | Commons | Guava | Hutool | Java 标准库 |
-|------|:-----:|:-----:|:-----:|:----------:|
-| 字符串判空/截断/填充 | ⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐ | ⭐ |
-| 文件复制/删除/读行 | ⭐⭐⭐ | ⭐ | ⭐⭐ | ⭐⭐ |
-| 文件名/扩展名处理 | ⭐⭐⭐ | — | ⭐⭐ | ⭐ |
-| 集合增强操作 | ⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ | ⭐ |
-| 日期处理 | ⭐ | — | ⭐⭐⭐ | ⭐⭐ |
-| 中文场景 | — | — | ⭐⭐⭐ | — |
-| 数学/统计 | ⭐⭐⭐ | — | ⭐ | ⭐ |
+| 场景 | Commons | Guava | Hutool | 优先选 |
+|------|:-----:|:-----:|:-----:|--------|
+| 字符串判空/截断/填充 | ⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐ | 任意(团队约定) |
+| 文件复制/删除/读行 | ⭐⭐⭐ | ⭐ | ⭐⭐ | **Commons IO** |
+| 文件名/路径处理 | ⭐⭐⭐ | — | ⭐⭐ | **Commons IO** |
+| 集合运算(交/并/差) | ⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ | 任意 |
+| 日期处理(旧Date) | ⭐ | — | ⭐⭐⭐ | **Java8 Time** |
+| 随机字符串 | ⭐⭐⭐ | — | ⭐⭐ | **Commons Lang3** |
+| HTML/XML转义 | ⭐⭐⭐ | — | ⭐ | **Commons Lang3** |
+| 数学/统计 | ⭐⭐⭐ | — | ⭐ | **Commons Math** |
 
-## LLM最常犯的错误
+## 核心模式
 
-| # | 错误 | 正确做法 |
-|---|------|---------|
-| 1 | `if (str != null && str.length() > 0)` | `StringUtils.isNotEmpty(str)` |
-| 2 | 手写 `new File(path).mkdirs()` | `FileUtils.forceMkdir(new File(path))` |
-| 3 | `str == null ? "" : str` | `ObjectUtils.defaultIfNull(str, "")` |
-| 4 | 手写文件复制(InputStream/OutputStream) | `FileUtils.copyFile(src, dest)` |
-| 5 | 手写随机字符串 | `RandomStringUtils.randomAlphanumeric(32)` |
-
-## 核心规则速查
+### 模式 1: StringUtils 判空精确语义
 
 ```java
-// ✅ Commons Lang3
-StringUtils.isBlank(str);                    // null/""/" " → true
-StringUtils.defaultString(str, "");          // null → ""
+// ✅ isEmpty: null 或 "" → true (不含空格)
+StringUtils.isEmpty(null);    // true
+StringUtils.isEmpty("");      // true
+StringUtils.isEmpty(" ");     // false ← 注意！
+StringUtils.isEmpty("abc");   // false
+
+// ✅ isBlank: null 或 空白字符 → true
+StringUtils.isBlank(null);    // true
+StringUtils.isBlank("");      // true
+StringUtils.isBlank(" ");     // true ← 含空格也true
+StringUtils.isBlank("abc");   // false
+
+// ✅ 选择规则: 表单验证用isBlank(不接受空白输入)，集合判空用isEmpty
+
+// ✅ defaultString: null安全取值
+StringUtils.defaultString(str, "");         // null → ""
+StringUtils.defaultIfBlank(str, "N/A");     // null/""/" " → "N/A"
+
+// ✅ 填充与截断
 StringUtils.leftPad("1", 3, '0');           // "001"
-StringUtils.join(list, ",");                // "a,b,c"
-RandomStringUtils.randomAlphanumeric(32);   // 随机32位字母数字
-ObjectUtils.defaultIfNull(obj, defaultVal);  // null → 默认值
-ObjectUtils.firstNonNull(a, b, c);          // 返回第一个非null
-Validate.notNull(obj, "参数不能为空");       // Guava Preconditions 同义
+StringUtils.abbreviate("very long text", 10); // "very lo..."
+```
 
-// ✅ Commons IO
-FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+### 模式 2: Commons IO 文件模式
+
+```java
+// ✅ 读取整个文件(小文件，<10MB)
+String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+List<String> lines = FileUtils.readLines(file, StandardCharsets.UTF_8);
+
+// ✅ 逐行读(大文件) — LineIterator 模式
+LineIterator it = FileUtils.lineIterator(file, "UTF-8");
+try { while (it.hasNext()) { String line = it.nextLine(); /* 处理 */ }
+} finally { LineIterator.closeQuietly(it); }
+
+// ✅ 流操作(需手动关流)
+InputStream in = new URL("https://example.com").openStream();
+try { String result = IOUtils.toString(in, StandardCharsets.UTF_8); }
+finally { IOUtils.closeQuietly(in); }
+
+// ❌ 反模式: IOUtils.toString() 读 1GB 文件 → 尝试创建1GB String → OOM
+
+// ✅ 写入/复制/删除
 FileUtils.writeStringToFile(file, content, StandardCharsets.UTF_8);
-FileUtils.copyFile(srcFile, destFile);
-FileUtils.deleteDirectory(dir);
-IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-FilenameUtils.getExtension("file.txt");  // "txt"
-FilenameUtils.getBaseName("/path/file.txt"); // "file"
+FileUtils.copyFile(src, dest);
+FileUtils.forceMkdir(dir);          // 递归创建目录
+FileUtils.deleteDirectory(dir);      // 递归删除
 
-// ✅ Commons Collections4
+// ✅ 文件名处理
+FilenameUtils.getExtension("archive.tar.gz");  // "gz" (最后一个.)
+FilenameUtils.getBaseName("/path/file.txt");   // "file"
+String normalized = FilenameUtils.normalize("C:/a/../b/file.txt"); // "C:/b/file.txt"
+```
+
+### 模式 3: Commons Lang3 迁移注意事项
+
+```java
+// ❌ 旧包名 — 不要用
+import org.apache.commons.lang.StringUtils;
+
+// ✅ 新包名(3.0+) — 必须用
+import org.apache.commons.lang3.StringUtils;
+
+// Maven坐标
+// groupId: commons-lang → org.apache.commons
+// artifactId: commons-lang → commons-lang3
+```
+
+### 模式 4: Validate 的参数校验
+
+```java
+// ⚠️ Commons Lang 3.0 变化: Validate 校验 null 抛 NullPointerException
+// (对齐JDK标准行为，以前抛 IllegalArgumentException)
+Validate.notNull(obj, "参数不能为空: %s", name);   // 抛 NPE
+Validate.isTrue(age > 0, "年龄必须>0");             // 抛 IllegalArgumentException
+// 注意：验证null用Validate.notNull，验证状态用Validate.isTrue
+```
+
+### 模式 5: RandomStringUtils
+
+```java
+// ✅ 随机字母数字(验证码/Token)
+RandomStringUtils.randomAlphanumeric(6);      // "a3Bx9K"
+RandomStringUtils.randomAlphanumeric(32);     // 32位Token
+// ✅ 随机数字
+RandomStringUtils.randomNumeric(6);           // "482931"
+// ✅ 随机字母
+RandomStringUtils.randomAlphabetic(8);        // "AbCdEfGh"
+```
+
+### 模式 6: 集合运算
+
+```java
+// ⚠️ 包名: org.apache.commons.collections4 (不是 collections)
 CollectionUtils.isEmpty(coll);
-CollectionUtils.union(list1, list2);
-CollectionUtils.intersection(list1, list2);
-MapUtils.getString(map, "key", "default");
+CollectionUtils.union(list1, list2);          // 并集
+CollectionUtils.intersection(list1, list2);   // 交集
+CollectionUtils.subtract(list1, list2);       // 差集(list1 - list2)
+
+MapUtils.getString(map, "key", "default");    // null安全取值
 ```
 
 ## Gotchas
-1. **StringUtils.isBlank 和 isEmpty 不同** — isBlank 包含空格字符串
-2. **FileUtils 操作会抛 IOException** — 需要 try-catch 或 throw
-3. **Commons Lang3 的 DateUtils 与 Java8 LocalDateTime 不兼容** — 用 Java8 Time API
-4. **Commons Collections4 包名是 org.apache.commons.collections4** — 不是 collections
-5. **IOUtils.toString 不自动关闭流** — 用 try-with-resources
-6. **StringUtils 和 Hutool 的 StrUtil 功能重叠** — 团队约定用一个，两个都导入会混乱
+1. **isEmpty vs isBlank** — isEmpty(" ")→true(不含空格)，isBlank(" ")→true(含空格)
+2. **IOUtils.toString 加载整个流到内存** — 大文件(>10MB)用 LineIterator 逐行读
+3. **IOUtils.toString 不关流** — 配合 finally { IOUtils.closeQuietly(in) }
+4. **Lang3 DateUtils 与 Java8 LocalDateTime 不兼容** — 用 java.time API，仅旧Date用Commons
+5. **Collections4 包名是 collections4** — 不是 collections(那是3.x)
+6. **Lang3 3.0 起 isAlpha/isNumeric/isAlphanumeric("")→false** — 以前版本返回true
+7. **Maven坐标: groupId=org.apache.commons, artifactId=commons-lang3** — 不是 commons-lang
+8. **Validate.notNull 抛 NullPointerException** — Validate.isTrue 抛 IllegalArgumentException
 
 ## Data Privacy
 本技能不收集、存储或传输任何用户数据。
