@@ -1,5 +1,5 @@
 ---
-name: caffeine
+name: caffeine-patterns
 description: |
   Caffeine JVM 本地缓存技能。覆盖本地缓存vs远程缓存(Redis)选择决策树、expireAfterWrite vs expireAfterAccess vs refreshAfterWrite、CacheLoader加载模式、与Spring Cache注解集成、缓存大小驱逐策略。
   当用户需要Java本地缓存、加速热点数据访问时使用。避免LLM直接写 ConcurrentHashMap 或所有缓存都走 Redis。

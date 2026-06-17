@@ -1,5 +1,5 @@
 ---
-name: xxl-job
+name: xxl-job-patterns
 description: |
   XXL-JOB 分布式任务调度技能。覆盖调度中心vs执行器架构、GLUE模式vs Bean模式选择、分片广播策略、失败重试与告警配置、任务参数传递、日志查看与清理。
   当用户需要Java分布式定时任务、替代@Scheduled时使用。

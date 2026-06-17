@@ -1,5 +1,5 @@
 ---
-name: mapstruct
+name: mapstruct-patterns
 description: |
   MapStruct Bean 映射技能。覆盖 Mapper 接口定义规范、类型不匹配转换策略、与 Lombok 配合(annotationProcessorPaths)、Spring Component模式注入、嵌套对象映射、反向映射、表达式映射、defaultValue与constant。
   纠正 LLM 最常见的错误：手写 BeanUtils.copyProperties（运行时反射）而非用 MapStruct（编译期生成）。

@@ -1,5 +1,5 @@
 ---
-name: mybatis-plus
+name: mybatis-plus-patterns
 description: |
   MyBatis-Plus 增强 ORM 技能。覆盖 LambdaQueryWrapper vs QueryWrapper选择、分页插件配置、乐观锁(@Version)、逻辑删除(@TableLogic)、自动填充(@TableField fill)、ActiveRecord vs Mapper模式选择、代码生成器模板。
   当用户使用 MyBatis-Plus 进行数据库操作、配置分页乐观锁、选择查询方式时使用。

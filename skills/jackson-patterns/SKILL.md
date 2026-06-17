@@ -1,5 +1,5 @@
 ---
-name: jackson
+name: jackson-patterns
 description: |
   Jackson JSON 序列化技能。覆盖日期格式配置(非ISO-8601)、Null序列化规则(数组→[]/字符串→""/数字→null)、@JsonView分层、ObjectMapper单例规则、TypeReference泛型反序列化、@JsonProperty/@JsonFormat/@JsonIgnore注解原则、与Spring Boot集成。
   当用户处理JSON序列化/反序列化、配置ObjectMapper、解决日期格式或null处理问题时使用。

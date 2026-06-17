@@ -1,5 +1,5 @@
 ---
-name: kafka
+name: kafka-patterns
 description: |
   Apache Kafka 消息队列技能。覆盖生产者 acks/retries/batch 配置、消费者 group.id/auto-offset 规则、幂等性保证(enable.idempotence+业务去重)、Spring Kafka @KafkaListener使用、DLT死信处理、消息顺序性与分区策略。
   当用户配置 Kafka 生产者/消费者、集成 Spring Kafka、处理消息可靠性时使用。

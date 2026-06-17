@@ -1,5 +1,5 @@
 ---
-name: seata
+name: seata-patterns
 description: |
   Seata 分布式事务技能。覆盖 AT/TCC/SAGA 模式选择决策、undo_log表设计、全局事务超时配置、与Spring Cloud集成、事务回滚处理。
   当用户需要分布式事务、跨服务数据一致性时使用。

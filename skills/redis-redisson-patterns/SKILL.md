@@ -1,5 +1,5 @@
 ---
-name: redis-redisson
+name: redis-redisson-patterns
 description: |
   Redis + Redisson 缓存与分布式锁技能。覆盖缓存Key命名规范、过期时间设置原则、RedisTemplate序列化选择(JSON vs JDK)、Redisson分布式锁规则(看门狗/WatchDog)、缓存穿透/击穿/雪崩防护、本地缓存(Caffeine)vs分布式缓存(Redis)选择决策。
   当用户使用Redis做缓存、使用Redisson做分布式锁、解决缓存一致性问题时使用。

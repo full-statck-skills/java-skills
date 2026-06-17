@@ -1,5 +1,5 @@
 ---
-name: junit-mockito
+name: junit-mockito-patterns
 description: |
   JUnit5 + Mockito 测试框架技能。覆盖 JUnit5 @ExtendWith替代@RunWith、Mockito @Mock/@InjectMocks规则、测试隔离原则(FIRST)、@SpringBootTest何时用何时不用(@WebMvcTest/@DataJpaTest切片测试)、BDDMockito given/willReturn风格、ArgumentCaptor参数捕获、verify行为验证。
   当用户编写 Java 单元测试/集成测试、Mock外部依赖时需要此技能。

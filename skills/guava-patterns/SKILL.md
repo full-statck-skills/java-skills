@@ -1,5 +1,5 @@
 ---
-name: guava
+name: guava-patterns
 description: |
   Google Guava 核心工具库技能。覆盖 Immutable集合选择规则、Cache本地缓存(与Caffeine对比选型)、字符串处理(CharMatcher/Joiner/Splitter/CaseFormat)、Preconditions参数校验、EventBus事件总线、Ordering比较器、Multimap/Multiset/BiMap特殊集合、RateLimiter限流。
   当用户在 Java 项目中需要集合操作、缓存、字符串处理、参数校验、事件解耦时使用。避免 LLM 手写工具方法而不用 Guava。

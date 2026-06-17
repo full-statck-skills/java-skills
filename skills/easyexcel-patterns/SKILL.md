@@ -1,5 +1,5 @@
 ---
-name: easyexcel
+name: easyexcel-patterns
 description: |
   EasyExcel Excel读写技能。覆盖监听器模式(大批量读)vs同步模式(小批量)、写模式选择(模板填充/动态表头/自定义样式)、百万级数据导出内存优化、@ExcelProperty/@ExcelIgnore/@ContentStyle注解。
   当用户需要Java处理Excel导入导出、处理大文件时使用。避免LLM手写POI样板代码。

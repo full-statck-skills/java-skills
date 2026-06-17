@@ -1,5 +1,5 @@
 ---
-name: hutool
+name: hutool-patterns
 description: |
   Hutool 中文 Java 工具库技能。覆盖与 Guava/Apache Commons 的功能选择矩阵、字符串/集合/日期/文件/HTTP 最常用方法速查、HttpUtil vs OkHttp 选型、BeanUtil vs MapStruct 职责划分。
   当用户在 Java 项目中需要中文场景的工具方法(拼音/身份证/手机号校验)、HTTP请求、文件操作、加解密时使用。避免 LLM 自造轮子而不用 Hutool。

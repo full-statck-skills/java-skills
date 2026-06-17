@@ -1,5 +1,5 @@
 ---
-name: lombok
+name: lombok-patterns
 description: |
   Lombok 注解使用规则技能。覆盖 @Data/@Builder/@Slf4j 组合规则、@EqualsAndHashCode(callSuper=true)继承陷阱、与Jackson/@Builder/@Jacksonized组合、与MyBatis无参构造器冲突解决、@Value不可变对象、@With对象复制。
   纠正 LLM 最常见的 Lombok 误用：不写 callSuper、不加 @Jacksonized、Builder 与继承冲突。

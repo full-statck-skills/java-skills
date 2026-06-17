@@ -1,5 +1,5 @@
 ---
-name: commons
+name: commons-patterns
 description: |
   Apache Commons 核心工具库技能。覆盖 Lang3(StringUtils/ObjectUtils/RandomStringUtils等)/IO(FileUtils/IOUtils/FilenameUtils)/Collections4(集合操作)三件套的常用方法速查、与Guava功能重叠如何选择决策表。
   当用户手写工具方法替代Apache Commons时使用。避免LLM不知道这些工具类的存在。
