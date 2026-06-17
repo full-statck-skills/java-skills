@@ -8,6 +8,7 @@ license: Apache-2.0
 
 # XXL-JOB 最佳实践模式
 
+> 来源：[https://github.com/xuxueli/xxl-job](https://github.com/xuxueli/xxl-job)  
 > 基于 [hiwepy/xxljob-spring-boot-starter](https://github.com/hiwepy/xxljob-spring-boot-starter)（Spring Boot Starter 封装）
 
 ## Capability Boundaries

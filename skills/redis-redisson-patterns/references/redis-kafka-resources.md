@@ -1,19 +1,15 @@
-# Redis/Redisson/中 Kafka 参考资源
+# Redis + Redisson 参考资源
 
-## Redis + Redisson
+## 官方文档
 
 | 资源 | 链接 |
 |------|------|
+| Redisson 文档 | https://redisson.org/docs/ |
 | Redisson GitHub | https://github.com/redisson/redisson |
-| Redisson 文档 | https://redisson.pro/docs/ |
+| Redis 文档 | https://redis.io/documentation |
 | Spring Data Redis | https://spring.io/projects/spring-data-redis |
+| Redisson 分布式锁 | https://redisson.org/docs/data-types/locks/ |
 
-## Kafka
+---
 
-| 资源 | 链接 |
-|------|------|
-| Kafka 官网 | https://kafka.apache.org/ |
-| Spring Kafka | https://spring.io/projects/spring-kafka |
-| Kafka 文档 | https://kafka.apache.org/documentation/ |
-
-> 来源：[https://redisson.pro/](https://redisson.pro/) | [https://kafka.apache.org/](https://kafka.apache.org/)
+> 来源：[https://redisson.org/docs/](https://redisson.org/docs/)

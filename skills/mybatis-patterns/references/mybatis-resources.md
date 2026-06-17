@@ -1,10 +1,19 @@
-# MyBatis/MyBatis-Plus 参考资源
+# MyBatis 参考资源
+
+## 官方文档
 
 | 资源 | 链接 |
 |------|------|
+| MyBatis 3 官方文档 | https://mybatis.org/mybatis-3/ |
 | MyBatis GitHub | https://github.com/mybatis/mybatis-3 |
-| MyBatis-Plus GitHub | https://github.com/baomidou/mybatis-plus |
-| MyBatis-Plus 官网 | https://baomidou.com/ |
-| MyBatis 文档 | https://mybatis.org/mybatis-3/ |
+| XML Mapper 配置 | https://mybatis.org/mybatis-3/sqlmap-xml.html |
+| 动态 SQL | https://mybatis.org/mybatis-3/dynamic-sql.html |
+| Java API | https://mybatis.org/mybatis-3/java-api.html |
 
-> 来源：[https://mybatis.org/](https://mybatis.org/) | [https://baomidou.com/](https://baomidou.com/)
+## 补充文章
+
+- [MyBatis 多表查询与动态 SQL](https://developer.aliyun.com/article/1719531)
+
+---
+
+> 来源：[https://mybatis.org/mybatis-3/](https://mybatis.org/mybatis-3/)

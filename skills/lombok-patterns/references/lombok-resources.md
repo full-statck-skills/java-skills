@@ -1,24 +1,25 @@
-# Lombok + MapStruct 参考资源
+# Lombok 参考资源
 
-## Lombok
-
-| 资源 | 链接 |
-|------|------|
-| 官网 | https://projectlombok.org/ |
-| 功能列表 | https://projectlombok.org/features/ |
-| @Builder | https://projectlombok.org/features/Builder |
-| @Data | https://projectlombok.org/features/Data |
-| @EqualsAndHashCode | https://projectlombok.org/features/EqualsAndHashCode |
-| @Jacksonized | https://projectlombok.org/features/experimental/Jacksonized |
-
-## MapStruct
+## 官方文档
 
 | 资源 | 链接 |
 |------|------|
-| GitHub | https://github.com/mapstruct/mapstruct |
-| Reference Guide | https://mapstruct.org/documentation/stable/reference/html/ |
-| FAQ | https://mapstruct.org/faq/ |
+| 官方文档 | https://projectlombok.org/features/ |
+| GitHub | https://github.com/projectlombok/lombok |
+| @Builder 文档 | https://projectlombok.org/features/Builder |
+| @Value 文档 | https://projectlombok.org/features/Value |
+| @SuperBuilder 文档 | https://projectlombok.org/features/experimental/SuperBuilder |
+| @With 文档 | https://projectlombok.org/features/With |
+| @Jacksonized 文档 | https://projectlombok.org/features/experimental/Jacksonized |
+| @Data 文档 | https://projectlombok.org/features/Data |
+| @EqualsAndHashCode 文档 | https://projectlombok.org/features/EqualsAndHashCode |
+
+## 常见问题
+
+- [Lombok @Builder 与 Jackson 交互](https://www.baeldung.com/lombok-builder-jackson)
+- [Lombok @Data 在 JPA 实体中的问题](https://www.baeldung.com/lombok-equals-hashcode-hibernate)
+- [@SuperBuilder 使用指南](https://www.baeldung.com/lombok-builder-inheritance)
 
 ---
 
-> 来源：[https://projectlombok.org/](https://projectlombok.org/) | [https://mapstruct.org/](https://mapstruct.org/)
+> 来源：[https://projectlombok.org/features/](https://projectlombok.org/features/)
