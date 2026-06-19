@@ -157,6 +157,7 @@ public void execute() {
 5. **session自动续期** — XxlJobTemplate检测session过期自动重新登录
 6. **XxlJobHelper.handleFail显式标记** — 不调用默认视为成功
 7. **@RequiredArgsConstructor注入** — 用final字段+构造器注入，不用@Autowired字段注入
+8. **@XxlJobCron 与 MetricMethodJobHandler 冲突** — XXL-JOB 自带的 `MetricMethodJobHandler` 通过反射读取 `@XxlJob.value()`，但 `@XxlJobCron` 不包含原生 `@XxlJob` 注解，导致 `NullPointerException: Cannot invoke "com.xxl.job.core.handler.annotation.XxlJob.value()" because "job" is null`。解决方案：① 禁用 Micrometer 指标（`xxl.job.metrics.enabled=false`） ② 同时在方法上添加空的 `@XxlJob` 注解解决反射问题 ③ 升级 hiwepy starter 版本看是否已修复
 
 ## Data Privacy
 本技能不收集、存储或传输任何用户数据。

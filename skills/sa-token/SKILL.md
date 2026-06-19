@@ -68,34 +68,43 @@ StpUtil.login(10001, true);                             // 指定记住我
 StpUtil.login(10001, new SaLoginParameter()...);        // 完整参数模式
 StpUtil.logout();                                       // 当前会话注销
 StpUtil.logout(10001);                                  // 指定账号注销
-StpUtil.logoutByTokenValue(token);                      // 指定Token注销
-StpUtil.kickout(10001);                                 // 踢人下线
+	StpUtil.logoutByTokenValue(token);                      // 指定Token注销
+	StpUtil.logoutByLoginId(10001, "PC");                   // 指定账号+设备注销
+	StpUtil.kickout(10001);                                 // 踢人下线
+	StpUtil.kickoutByTokenValue(token);                     // 根据Token值踢人
 StpUtil.isLogin();                                      // 是否登录(true/false)
 StpUtil.checkLogin();                                   // 校验登录(未登录抛NotLoginException)
 
-// === 会话/Token查询 ===
-StpUtil.getLoginId();                                   // 当前账号id
-StpUtil.getLoginIdAsString()/AsInt()/AsLong();          // 类型化获取
-StpUtil.getLoginIdDefaultNull();                        // 未登录返回null
-StpUtil.getTokenValue();                                // 当前token值
-StpUtil.getTokenName();                                 // token名称(satoken)
-StpUtil.getLoginIdByToken(token);                       // 根据token查账号
-StpUtil.getTokenTimeout();                              // 剩余有效期(秒)
-StpUtil.getTokenInfo();                                 // 完整TokenInfo
+	// === 会话/Token查询 ===
+	StpUtil.getLoginId();                                   // 当前账号id
+	StpUtil.getLoginIdAsString()/AsInt()/AsLong();          // 类型化获取
+	StpUtil.getLoginIdDefaultNull();                        // 未登录返回null
+	StpUtil.getLoginIdByToken(token);                       // 根据token查账号
+	StpUtil.getTokenValue();                                // 当前token值
+	StpUtil.getTokenValueByLoginId(10001);                  // 获取指定账号的token值
+	StpUtil.getTokenListByLoginId(10001);                   // 获取指定账号所有token列表
+	StpUtil.getTokenName();                                 // token名称(satoken)
+	StpUtil.getTokenTimeout();                              // 剩余有效期(秒)
+	StpUtil.getTokenInfo();                                 // 完整TokenInfo
+	StpUtil.setTokenValue("xxx-xxx");                       // 手动设置当前会话token值
+	StpUtil.renewRefresh();                                // 自动续签token有效期
+	StpUtil.getTerminalListByLoginId(10001);                // 获取指定账号所有终端列表
 
-// === 权限/角色校验 ===
-StpUtil.getPermissionList();                            // 权限码集合
-StpUtil.hasPermission("user.add");                     // boolean
-StpUtil.checkPermission("user.add");                   // 失败抛NotPermissionException
-StpUtil.checkPermissionAnd("add","del","get");          // 全部拥有
-StpUtil.checkPermissionOr("add","del","get");          // 至少一个
-StpUtil.hasRole("admin");                               // boolean
-StpUtil.checkRole("admin");                             // 失败抛NotRoleException
-
-// === Session会话 ===
-StpUtil.getSession();                                   // Account-Session
-StpUtil.getTokenSession();                              // Token-Session
-SaSessionCustomUtil.getSessionById("goods-10001");     // Custom-Session
+	// === 权限/角色校验 ===
+	StpUtil.getPermissionList();                            // 权限码集合
+	StpUtil.hasPermission("user.add");                     // boolean
+	StpUtil.checkPermission("user.add");                   // 失败抛NotPermissionException
+	StpUtil.checkPermissionAnd("add","del","get");          // 全部拥有
+	StpUtil.checkPermissionOr("add","del","get");          // 至少一个
+	StpUtil.hasRole("admin");                               // boolean
+	StpUtil.checkRole("admin");                             // 失败抛NotRoleException
+	
+	// === Session会话 ===
+	StpUtil.getSession();                                   // 当前账号Account-Session
+	StpUtil.getSessionByLoginId(10001);                     // 指定账号的Session
+	StpUtil.getTokenSession();                              // 当前Token-Session
+	StpUtil.getTokenSessionByTokenValue("xxx-xxx");        // 按token值获取Token-Session
+	SaSessionCustomUtil.getSessionById("goods-10001");     // Custom-Session
 ```
 
 ## 参考文档
