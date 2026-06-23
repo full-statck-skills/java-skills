@@ -6,8 +6,8 @@
     "name": "PartMeAI",
     "email": "partmeai@gmail.com"
   },
-  "homepage": "https://github.com/full-statck-skills/java-skills",
-  "repository": "https://github.com/full-statck-skills/java-skills",
+  "homepage": "https://github.com/full-stack-skills/java-skills",
+  "repository": "https://github.com/full-stack-skills/java-skills",
   "source": "./",
   "skills": [
     "./skills/java-code-comments",
