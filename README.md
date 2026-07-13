@@ -24,7 +24,7 @@ English | [简体中文](./README.zh-CN.md)
 
 **Java Skills** is a curated collection of Agent Skills for AI coding agents, part of the [Full Stack Skills](https://github.com/partme-ai/full-stack-skills) ecosystem maintained by [PartMe.AI](https://github.com/partme-ai).
 
-This package includes **13 skills**. Each skill is a self-contained `SKILL.md` file that AI agents load on-demand.
+This package includes **31 skills**. Each skill is a self-contained `SKILL.md` file that AI agents load on-demand.
 
 ## 📦 Install
 
@@ -38,7 +38,7 @@ Or install specific skills:
 npx skills add full-stack-skills/java-skills --skill <skill-name>
 ```
 
-## 🎯 Skills (13)
+## 🎯 Skills (31)
 
 | Skill | Description |
 |-------|-------------|
@@ -55,6 +55,9 @@ npx skills add full-stack-skills/java-skills --skill <skill-name>
 | `sa-token-micro` | Sa-Token microservice auth — Same-Token inter-service isolation, SpringCloud Gateway unified auth, Feign/Dubbo/gRPC RPC auth, distributed session |
 | `sa-token-api-security` | Sa-Token API security — API parameter signing (anti-tamper/anti-replay), API Key managed partial authorization, temporary token (short-lived links) |
 | `sa-token-integration` | Sa-Token integration extensions — JWT (Simple/Mixin/Stateless), Redis persistence, Alone-Redis isolation, AOP annotation auth, Quick-Login, template engine integration |
+| `easyexcel-fill` | Alibaba EasyExcel 4.x template filling — simple object / list / complex / horizontal multi-column composite filling, Spring Boot integration, template design specs, escape chars, 03/07 version differences |
+| `easyexcel-write` | Alibaba EasyExcel 4.x programmatic Excel generation — 3 minimal-write APIs, complex multi-row headers, `@ExcelProperty`/`@ExcelIgnore`/`@DateTimeFormat`/`@NumberFormat` annotations, include/exclude columns, `@ColumnWidth`/`@ContentRowHeight` style annotations, `@HeadStyle`/`@ContentStyle` custom styles, merged cells, image export, hyperlinks/comments/formulas/rich-text, dynamic headers, auto column width, custom `WriteHandler`s, paged batch write, Web `OutputStream` direct download, 03/07 version compatibility |
+| `easyexcel-read` | Alibaba EasyExcel 4.x Excel data reading — listener pattern (`ReadListener` / `AnalysisEventListener` / `PageReadListener`), synchronous `doReadSync`, multi-Sheet reading, `@ExcelProperty(index/name)` matching, multi-row headers (`headRowNumber`), date/number/custom converters, listener exception handling (`onException` + `ExcelDataConvertException`), extra info reading (comment/hyperlink/merge via `extraRead` + `CellExtra`), formula and cell type (`CellData<T>`), model-less reading (`ReadListener<Map<Integer,String>>`), Web upload reading (`MultipartFile`→`InputStream`) |
 
 ## 🤖 Supported Agents
 

@@ -24,7 +24,7 @@
 
 **Java 技能** 是一组 AI 编码智能体技能，属于 [Full Stack Skills](https://github.com/partme-ai/full-stack-skills) 生态，由 [PartMe.AI](https://github.com/partme-ai) 维护。
 
-本包包含 **13 个技能**。每个技能是一个独立的 `SKILL.md` 文件，AI 智能体按需加载。
+本包包含 **31 个技能**。每个技能是一个独立的 `SKILL.md` 文件，AI 智能体按需加载。
 
 ## 📦 安装
 
@@ -38,7 +38,7 @@ npx skills add full-stack-skills/java-skills
 npx skills add full-stack-skills/java-skills --skill <skill-name>
 ```
 
-## 🎯 技能列表 (13)
+## 🎯 技能列表 (31)
 
 | 技能 | 描述 |
 |------|------|
@@ -55,6 +55,9 @@ npx skills add full-stack-skills/java-skills --skill <skill-name>
 | `sa-token-micro` | Sa-Token 微服务鉴权 — Same-Token 内部服务隔离、SpringCloud Gateway 统一鉴权、Feign/Dubbo/gRPC 鉴权、分布式 Session |
 | `sa-token-api-security` | Sa-Token API 安全 — API 参数签名(防篡改防重放)、API Key 部分授权管理、临时 Token 短效链接 |
 | `sa-token-integration` | Sa-Token 集成扩展 — JWT 三种模式(Simple/Mixin/Stateless)、Redis 持久化、Alone-Redis 缓存隔离、AOP 注解鉴权、Quick-Login 快速登录、模板引擎集成 |
+| `easyexcel-fill` | Alibaba EasyExcel 4.x 模板填充 — 简单对象 / 列表 / 复杂 / 横向多列组合填充、Spring Boot 集成、模板设计规范、转义字符、03/07 版差异 |
+| `easyexcel-write` | Alibaba EasyExcel 4.x 程序化生成 Excel — 3 种最简写入 API、复杂多级表头、`@ExcelProperty` / `@ExcelIgnore` / `@DateTimeFormat` / `@NumberFormat` 注解、include/exclude 选择列、`@ColumnWidth` / `@ContentRowHeight` 样式注解、`@HeadStyle` / `@ContentStyle` 自定义样式、合并单元格、图片导出、超链接/批注/公式/富文本、动态表头、自动列宽、自定义 `WriteHandler`、分页分批写入、Web `OutputStream` 直接下载、03/07 版兼容 |
+| `easyexcel-read` | Alibaba EasyExcel 4.x Excel 数据读取 — 监听器模式(`ReadListener` / `AnalysisEventListener` / `PageReadListener`)、同步 `doReadSync`、多 Sheet 读取、`@ExcelProperty(index/name)` 匹配、多行表头(`headRowNumber`)、日期/数字/自定义转换器、监听器异常处理(`onException` + `ExcelDataConvertException`)、额外信息读取(批注/超链接/合并, `extraRead` + `CellExtra`)、公式和单元格类型(`CellData<T>`)、不创建对象的读(`ReadListener<Map<Integer,String>>`)、Web 上传读取(`MultipartFile`→`InputStream`) |
 
 ## 🤖 支持的智能体
 
