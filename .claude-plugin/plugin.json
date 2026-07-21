@@ -1,9 +1,9 @@
 {
   "name": "java-skills",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "description": "Java Skills is a curated collection of Agent Skills for AI coding agents, part of the [Full Stack Skills](https://github.com/partme-ai/full-stack-skills) ecosystem maintained by [PartMe.AI](https://github.com/partme-ai).",
   "author": {
-    "name": "PartMeAI",
+    "name": "PartMe.AI",
     "email": "partmeai@gmail.com"
   },
   "homepage": "https://github.com/full-stack-skills/java-skills",
@@ -33,6 +33,7 @@
     "./skills/mybatis-plus-patterns",
     "./skills/redis-redisson-patterns",
     "./skills/kafka-patterns",
+    "./skills/easyexcel-patterns",
     "./skills/easyexcel-fill",
     "./skills/easyexcel-write",
     "./skills/easyexcel-read",
