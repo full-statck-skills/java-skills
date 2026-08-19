@@ -37,6 +37,7 @@ license: Apache-2.0
 | 6 | 项目无 lombok 却保留 annotationProcessorPaths | 无 lombok → 连同 compiler 注解路径块一起删 |
 | 7 | jacoco check 不设 haltOnFailure | `<haltOnFailure>true` + BUNDLE LINE ≥ 0.90 |
 | 8 | 用 JDK 26 编译 target 8 | `export JAVA_HOME=$(/usr/libexec/java_home -v 21)` |
+| 9 | 以为 Maven 4 改 POM 结构 | model 4.0.0 不变；仅 maven.version 基线/enforcer 区间需调（详见 references/maven4.md） |
 
 ## 核心速查
 
@@ -79,6 +80,7 @@ parent → 坐标 → name/description/url
 |------|--------|
 | [references/pom-structure.md](references/pom-structure.md) | 写/改 pom 时：元素顺序详解、三段式全量示例、build 11 插件配置表、profiles 完整结构 |
 | [references/version-matrix.md](references/version-matrix.md) | 分支/发版时：十分支全表、tag 发布 4 步、SNAPSHOT 滚动映射、SB parent 核对、JDK 兼容规则表 |
+| [references/maven4.md](references/maven4.md) | 用 Maven 4 构建时：M3/M4 差异、运行 JDK 17+、maven.version 基线与 enforcer 区间、consumer POM、wrapper 迁移、CI 双轨 |
 | [examples/create-new-starter.md](examples/create-new-starter.md) | 从零新建 starter 的 8 步完整演练（含验收标准） |
 | [assets/pom-template.xml](assets/pom-template.xml) | 直接复制使用的带占位符模板（XML 校验通过） |
 

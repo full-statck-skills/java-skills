@@ -38,6 +38,7 @@ license: Apache-2.0
 | 6 | 分支间源码漂移 | src/测试/README 逐字节一致；仅 pom 差异 |
 | 7 | 本地用 JDK 26 编译 release 8 | `export JAVA_HOME=$(/usr/libexec/java_home -v 21)` |
 | 8 | XML 注释里写 `--xxx` | XML 注释内禁止双连字符（not well-formed） |
+| 9 | 以为 Maven 4 要改 POM 结构 | model 4.0.0 不变；仅 maven.version 基线与 enforcer 区间需调；可移除 flatten 插件（原生 consumer POM） |
 
 ## 核心速查
 
@@ -87,6 +88,7 @@ license: Apache-2.0
 |------|--------|
 | [references/pom-structure.md](references/pom-structure.md) | 写/改 pom 时：无 parent 结构详解、三段式全量、build 插件配置表、依赖四组 |
 | [references/branch-release.md](references/branch-release.md) | 分支/发版时：多 JDK 分支同步法、同线依赖、tag 发布 5 步、滚动更新 |
+| [references/maven4.md](references/maven4.md) | 用 Maven 4 构建时：M3/M4 差异、运行 JDK 17+、maven.version 基线、consumer POM（原生替代 flatten）、wrapper 迁移 |
 | [examples/create-component.md](examples/create-component.md) | 从零封装组件的 8 步演练 |
 | [assets/pom-template.xml](assets/pom-template.xml) | 可直接复制的占位符模板（XML 校验通过） |
 
