@@ -53,7 +53,7 @@
 ```xml
 <properties>
     <!-- ═══ 第一段：基础属性（自然排序）═══ -->
-    <java.version>8</java.version>                          <!-- 8/17/21；禁 1.8 -->
+    <java.version>1.8</java.version>                          <!-- 1.8/17/21；warning：maven-compiler-plugin 3.15.0 用 8 与 --release 8 等效（推荐 1.8 写法） -->
     <maven.compiler.release>${java.version}</maven.compiler.release>
     <maven.version>3.0</maven.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

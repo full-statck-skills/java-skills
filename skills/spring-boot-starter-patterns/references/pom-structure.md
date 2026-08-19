@@ -61,7 +61,7 @@
 ```xml
 <properties>
     <!-- ═══ 第一段：基础属性（自然排序）═══ -->
-    <java.version>8</java.version>                     <!-- 按分支矩阵；用 8 禁 1.8 -->
+    <java.version>1.8</java.version>                     <!-- 按分支矩阵：用 1.8（maven-compiler-plugin 3.15.0 内部版本 8 即 --release 8） -->
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
