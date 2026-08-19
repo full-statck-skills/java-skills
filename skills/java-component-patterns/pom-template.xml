@@ -60,7 +60,7 @@
 
     <properties>
         <!-- ═══ 第一段: 基础属性（自然排序）═══ -->
-        <!-- {JDK_VERSION}: 8 / 17 / 21；禁用 1.8（--release 语法兼容） -->
+        <!-- {JDK_VERSION}: 8 / 17 / 21；禁用 1.8（release 参数语法兼容） -->
         <java.version>{JDK_VERSION}</java.version>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven.version>3.0</maven.version>
