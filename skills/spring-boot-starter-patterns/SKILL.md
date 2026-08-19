@@ -82,6 +82,7 @@ parent → 坐标 → name/description/url
 | [references/version-matrix.md](references/version-matrix.md) | 分支/发版时：十分支全表、tag 发布 4 步、SNAPSHOT 滚动映射、SB parent 核对、JDK 兼容规则表 |
 | [references/maven4.md](references/maven4.md) | 用 Maven 4 构建时：M3/M4 差异、运行 JDK 17+、maven.version 基线与 enforcer 区间、consumer POM、wrapper 迁移、CI 双轨 |
 | [examples/create-new-starter.md](examples/create-new-starter.md) | 从零新建 starter 的 8 步完整演练（含验收标准） |
+| [examples/maven4-migration.md](examples/maven4-migration.md) | 迁 Maven 4 时：双轨 enforcer、wrapper 切换、M4+JDK21 验证 release 8、consumer POM 检查、CI 双轨、按需升 model 4.1.0 |
 | [assets/pom-template.xml](assets/pom-template.xml) | 直接复制使用的带占位符模板（XML 校验通过） |
 
 ## 何时用本 skill vs java-component-patterns

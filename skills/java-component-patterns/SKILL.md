@@ -90,6 +90,7 @@ license: Apache-2.0
 | [references/branch-release.md](references/branch-release.md) | 分支/发版时：多 JDK 分支同步法、同线依赖、tag 发布 5 步、滚动更新 |
 | [references/maven4.md](references/maven4.md) | 用 Maven 4 构建时：M3/M4 差异、运行 JDK 17+、maven.version 基线、consumer POM（原生替代 flatten）、wrapper 迁移 |
 | [examples/create-component.md](examples/create-component.md) | 从零封装组件的 8 步演练 |
+| [examples/maven4-migration.md](examples/maven4-migration.md) | 迁 Maven 4 时：自管插件对照、移除 flatten（consumer POM 原生替代）、三分支验证、4.1.0 session scope 升级判断 |
 | [assets/pom-template.xml](assets/pom-template.xml) | 可直接复制的占位符模板（XML 校验通过） |
 
 ## 质量门禁
