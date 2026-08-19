@@ -1,19 +1,39 @@
 # Maven 4 适配指南
 
-> 适用：spring-boot-starter-patterns 与 java-component-patterns 共用的 Maven 4 双轨支持。POM model 沿用 4.0.0，**现有模板 XML 结构不变**；差异在运行时要求、基线声明与发布产物。
+> 适用：spring-boot-starter-patterns 与 java-component-patterns 共用的 Maven 4 双轨支持。Maven 4 **兼容 model 4.0.0**（现有项目零改动可构建），同时**引入新 model 4.1.0**（启用新特性需显式升级 modelVersion，见 §1.1）。
 
 ## 1. Maven 3 vs Maven 4 关键差异
 
 | 维度 | Maven 3.9.x | Maven 4.x |
 |------|-------------|-----------|
 | **运行时 JDK** | 8+ | **17+**（硬性要求；即使编译 release 8） |
-| POM model | 4.0.0 | 4.0.0（不变） |
+| **POM model** | 4.0.0 | **兼容 4.0.0 + 新增 4.1.0**（`http://maven.apache.org/POM/4.1.0`；详见 §1.1） |
 | 发布产物 | 原始 POM（构建配置泄漏给消费者） | **Consumer POM**（自动 flattened，更干净） |
 | flatten 插件 | 需要 maven-flatten-plugin 手动扁平化 | 原生替代（多数场景可移除 flatten） |
 | 增量构建 | 无（全量） | Build Consumer（可选加速） |
 | extensions 声明 | `.mvn/extensions.xml` 冗长 | 简化 `{g:a:v}` |
 | wrapper | mvnw（3.x distributionUrl） | mvnw（distributionUrl 指向 4.x） |
 | 并行构建 | `-T` 显式 | 更智能的 Reactor 调度 |
+
+### 1.1 POM model：4.0.0（兼容）vs 4.1.0（新特性）
+
+| | model 4.0.0 | model 4.1.0 |
+|---|---|---|
+| Maven 4 下构建 | ✅ 完全兼容，零改动 | ✅ 启用新特性 |
+| Maven 3 下构建 | ✅ | ❌ 不识别 |
+| `<scope>session</scope>` 依赖 | ❌ | ✅（构建期会话域，不进传递依赖） |
+| 依赖解析增强 | 旧语义 | ✅ 改进的版本插值/管理 |
+
+**升级方法**：改 `<project>` 的 xmlns/xsi 到 4.1.0 命名空间 + `modelVersion` 4.1.0：
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.1.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 https://maven.apache.org/xsd/maven-4.1.0.xsd">
+    <modelVersion>4.1.0</modelVersion>
+```
+
+**建议**：本 skill 的模板保持 model 4.0.0（最大兼容 M3/M4 双轨 + Central 消费者面）；确需 session scope 等新特性时再升级 4.1.0，并接受「仅 Maven 4 可构建」的约束。
 
 ## 2. 对本模板的实际影响
 

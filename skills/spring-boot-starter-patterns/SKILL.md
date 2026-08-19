@@ -37,7 +37,7 @@ license: Apache-2.0
 | 6 | 项目无 lombok 却保留 annotationProcessorPaths | 无 lombok → 连同 compiler 注解路径块一起删 |
 | 7 | jacoco check 不设 haltOnFailure | `<haltOnFailure>true` + BUNDLE LINE ≥ 0.90 |
 | 8 | 用 JDK 26 编译 target 8 | `export JAVA_HOME=$(/usr/libexec/java_home -v 21)` |
-| 9 | 以为 Maven 4 改 POM 结构 | model 4.0.0 不变；仅 maven.version 基线/enforcer 区间需调（详见 references/maven4.md） |
+| 9 | 以为 Maven 4 下必须改 model | M4 兼容 model 4.0.0（零改动）；新特性（session scope 等）才需升级 4.1.0（仅 M4 可构建，详见 references/maven4.md） |
 
 ## 核心速查
 

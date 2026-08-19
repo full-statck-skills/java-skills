@@ -38,7 +38,7 @@ license: Apache-2.0
 | 6 | 分支间源码漂移 | src/测试/README 逐字节一致；仅 pom 差异 |
 | 7 | 本地用 JDK 26 编译 release 8 | `export JAVA_HOME=$(/usr/libexec/java_home -v 21)` |
 | 8 | XML 注释里写 `--xxx` | XML 注释内禁止双连字符（not well-formed） |
-| 9 | 以为 Maven 4 要改 POM 结构 | model 4.0.0 不变；仅 maven.version 基线与 enforcer 区间需调；可移除 flatten 插件（原生 consumer POM） |
+| 9 | 以为 Maven 4 下必须改 model | M4 兼容 4.0.0 零改动；session scope 等新特性才升级 4.1.0（仅 M4 可构建）；可移除 flatten（原生 consumer POM） |
 
 ## 核心速查
 
