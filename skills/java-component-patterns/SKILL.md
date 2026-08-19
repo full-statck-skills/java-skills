@@ -1,9 +1,9 @@
 ---
 name: java-component-patterns
 description: |
-  Java 组件（SDK/工具库，非 Spring Boot starter）封装规范。无 parent 独立 POM 结构、licenses/scm/developers 元数据三段、三段式 properties（基础/Dependency versions/Plugin versions 自然排序）、maven.compiler.release 的 API 安全用法、多 JDK 分支模型（feature/{line} → JDK 8/17/21）、组件间同线依赖、tag 发布与 SNAPSHOT 滚动、JaCoCo 90% 门禁。
-  纠正 LLM：给独立组件加 spring-boot-starter-parent、java.version 写 1.8 触发 release 编译失败、properties 不分类不排序、漏 licenses/scm/developers 导致 Central 被拒、跨线依赖内部组件（1.0.x 依赖 2.0.x）、忘记无 parent 需自管全部插件版本。
-  触发词：组件封装、SDK 开发、无 parent pom、独立库、java component、多 JDK 分支、xxx-java-sdk 模板。
+  Java 组件（SDK/工具库，非 Spring Boot starter）封装规范。无 parent 独立 POM 结构、licenses/scm/developers 元数据三段、三段式 properties（基础/Dependency versions/Plugin versions 自然排序）、Jackson BOM 统一版本管理、maven.compiler.release 的 API 安全用法、多 JDK 分支模型（feature/{line} → JDK 8/17/21）、组件间同线依赖、tag 发布与 SNAPSHOT 滚动、JaCoCo 90% 门禁、pom.xml 4 空格缩进格式化。
+  纠正 LLM：给独立组件加 spring-boot-starter-parent、java.version 写 8（应写 1.8）、properties 不分类不排序、漏 licenses/scm/developers 导致 Central 被拒、跨线依赖内部组件（1.0.x 依赖 2.0.x）、忘记无 parent 需自管全部插件版本、Jackson 依赖在 dm 中放无 version 条目遮蔽 BOM、License URL 用 http（应用 https）。
+  触发词：组件封装、SDK 开发、无 parent pom、独立库、java component、多 JDK 分支、xxx-java-sdk 模板、jackson-bom、Jackson 版本管理。
 license: Apache-2.0
 ---
 
@@ -31,7 +31,7 @@ license: Apache-2.0
 | # | 错误 | 正确做法 |
 |---|------|---------|
 | 1 | 给独立组件加 spring-boot-starter-parent | 无 parent；插件版本在 properties 第三段自管 |
-| 2 | `java.version` 写 `1.8` | 写 `8`（`--release 1.8` 新 JDK 报错） |
+| 2 | `java.version` 写 `8` | 写 `1.8`（maven-compiler-plugin 3.15.0 + JDK8 组合下 `--release 8` 有问题；`1.8` 全版本兼容） |
 | 3 | 用 source/target 而非 release | `maven.compiler.release=${java.version}`（API 安全） |
 | 4 | 漏 licenses/scm/developers | Central 发布必需；每段配中文注释 |
 | 5 | 跨线依赖内部组件 | 同线原则：feature/1.0.x → 依赖 1.0.x 线 |
@@ -39,6 +39,10 @@ license: Apache-2.0
 | 7 | 本地用 JDK 26 编译 release 8 | `export JAVA_HOME=$(/usr/libexec/java_home -v 21)` |
 | 8 | XML 注释里写 `--xxx` | XML 注释内禁止双连字符（not well-formed） |
 | 9 | 以为 Maven 4 下必须改 model | M4 兼容 4.0.0 零改动；session scope 等新特性才升级 4.1.0（仅 M4 可构建）；可移除 flatten（原生 consumer POM） |
+| 10 | Jackson 依赖在 dependencyManagement 里写无 version 的条目 | 无 version 的 dm 条目会遮蔽 BOM import，导致 `dependencies.dependency.version is missing`；必须整体删除 dm 条目（不能只删 version 行），让 BOM 生效 |
+| 11 | Jackson 每个模块单独写 version | 用 BOM 统一管理：properties 定义 `jackson-bom.version`，dependencyManagement 中 `import com.fasterxml.jackson:jackson-bom:${jackson-bom.version}`（2.x）或 `import tools.jackson:jackson-bom:${jackson-bom.version}`（3.x）；dependencies 中不写 version |
+| 12 | License URL 用 `http://` | Apache License URL 必须用 `https://www.apache.org/licenses/LICENSE-2.0.txt`（http 会被 Central 拒绝） |
+| 13 | pom.xml 缩进不一致 | 统一 4 空格缩进，XML 标签对齐，properties 三段式分组 |
 
 ## 核心速查
 
@@ -57,6 +61,31 @@ license: Apache-2.0
 ③ <!-- Maven Plugin versions --> : 完整插件版本（无 parent 全自管）
 ```
 
+### Jackson BOM 版本管理
+
+组件依赖 Jackson 时，**必须用 BOM 统一管理**，禁止每个模块单独写 version：
+
+```
+properties:   jackson-bom.version = {版本}
+dependencyManagement:
+  <dependency>
+    <groupId>com.fasterxml.jackson</groupId>     ← 2.x
+    <artifactId>jackson-bom</artifactId>
+    <version>${jackson-bom.version}</version>
+    <type>pom</type>
+    <scope>import</scope>
+  </dependency>
+dependencies:  jackson-databind / jackson-dataformat-xml 等（不写 version）
+```
+
+| 分支 | jackson-bom.version | groupId |
+|------|---------------------|---------|
+| 1.0.x | 2.18.9 | com.fasterxml.jackson |
+| 2.0.x | 2.22.1 | com.fasterxml.jackson |
+| 3.0.x | 3.2.1 | **tools.jackson** |
+
+**⚠ 铁律**：dependencyManagement 中**禁止放无 version 的 Jackson 条目**——会遮蔽 BOM import，导致 `dependencies.dependency.version is missing`。必须整体删除 dm 条目。
+
 ### 与 starter 的关键差异
 
 | 维度 | 组件（本 skill） | starter |
@@ -69,12 +98,11 @@ license: Apache-2.0
 
 ### 分支模型速查
 
-| feature/{line} | JDK |
-|----------------|-----|
-| 1.0.x | 8 |
-| 2.0.x | 8 或 17 |
-| 3.0.x ~ 3.5.x | 17 |
-| 4.0.x / 4.1.x | 21 |
+| feature/{line} | JDK | java.version | Jackson BOM |
+|----------------|-----|--------------|-------------|
+| 1.0.x | 8 | 1.8 | 2.18.9 (com.fasterxml.jackson) |
+| 2.0.x | 17 | 17 | 2.22.1 (com.fasterxml.jackson) |
+| 3.0.x ~ 3.5.x | 21 | 21 | 3.2.1 (tools.jackson) |
 
 版本：`{line}.x.{yyyyMMdd}` ↔ `-SNAPSHOT`；同步法：`git checkout <src> -- src/ README.md`（不含 pom）。
 

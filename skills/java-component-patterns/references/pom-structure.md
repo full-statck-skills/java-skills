@@ -53,13 +53,13 @@
 ```xml
 <properties>
     <!-- ═══ 第一段：基础属性（自然排序）═══ -->
-    <java.version>1.8</java.version>                          <!-- 1.8/17/21；warning：maven-compiler-plugin 3.15.0 用 8 与 --release 8 等效（推荐 1.8 写法） -->
+    <java.version>1.8</java.version>                          <!-- 1.8/17/21；1.8 全版本兼容（maven-compiler-plugin 3.15.0 + JDK8 下 8 有问题） -->
     <maven.compiler.release>${java.version}</maven.compiler.release>
     <maven.version>3.0</maven.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- ═══ 第二段：Dependency versions（自然排序）═══ -->
-    <jackson.version>2.18.9</jackson.version>
+    <jackson-bom.version>2.18.9</jackson-bom.version>              ← BOM 统一管理（1.0.x: 2.18.9, 2.0.x: 2.22.1, 3.0.x: 3.2.1）
     <okhttp3.version>4.12.0</okhttp3.version>
     <okhttp3-extension.version>1.0.x.20260630-SNAPSHOT</okhttp3-extension.version>  <!-- 内部组件线 -->
     <lombok.version>1.18.46</lombok.version>
@@ -88,15 +88,25 @@
 
 注释标签用英文（`Dependency versions` / `Maven Plugin versions`，参照 SDK）。
 
-**release vs source/target**：`--release` 同时约束 API，防止误用高版本 JDK API，组件库首选；`--release 1.8` 新 JDK 报错只接受 `8`。
+**release vs source/target**：`--release` 同时约束 API，防止误用高版本 JDK API，组件库首选；`java.version` 写 `1.8`（全版本兼容，maven-compiler-plugin 3.15.0 + JDK8 下 `8` 有问题）。
 
 ## 4. dependencyManagement
 
-集中声明：被集成外部库 + 内部组件线 + 测试库版本：
+集中声明：**Jackson BOM** + 被集成外部库 + 内部组件线 + 测试库版本：
 
 ```xml
 <dependencyManagement>
     <dependencies>
+        <!-- ★ Jackson BOM（有 Jackson 依赖时必加，置于最前面）★ -->
+        <!-- 2.x: com.fasterxml.jackson:jackson-bom -->
+        <!-- 3.x: tools.jackson:jackson-bom -->
+        <dependency>
+            <groupId>com.fasterxml.jackson</groupId>
+            <artifactId>jackson-bom</artifactId>
+            <version>${jackson-bom.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
         <dependency>
             <groupId>{EXTERNAL_GROUP}</groupId>
             <artifactId>{EXTERNAL_ARTIFACT}</artifactId>
@@ -118,6 +128,16 @@
     </dependencies>
 </dependencyManagement>
 ```
+
+### Jackson BOM 关键规则
+
+| 规则 | 说明 |
+|------|------|
+| properties 定义 `jackson-bom.version` | 1.0.x → `2.18.9`，2.0.x → `2.22.1`，3.0.x → `3.2.1` |
+| BOM import 置于 dm 最前面 | `<type>pom</type><scope>import</scope>` |
+| dependencies 中不写 version | BOM 自动管理所有 Jackson 模块版本 |
+| **禁止 dm 中放无 version 的 Jackson 条目** | 无 version 的 dm 条目会遮蔽 BOM import，导致 `dependencies.dependency.version is missing`；必须整体删除 dm 条目（不能只删 version 行） |
+| 3.0.x 用 `tools.jackson:jackson-bom` | groupId 从 `com.fasterxml.jackson` 改为 `tools.jackson` |
 
 ## 5. dependencies 四组
 

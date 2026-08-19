@@ -12,7 +12,7 @@
   {DEV_NAME} {DEV_EMAIL} {DEV_URL}
   {release/snapshot-repo-id} {release/snapshot-repo-url}
 
-  规则: java.version 用 8/17/21（禁 1.8）；无 lombok 则删依赖+annotationProcessorPaths
+  规则: java.version 用 1.8/17/21（1.8 全版本兼容，8 在 maven-compiler-plugin 3.15.0 + JDK8 下有问题）；无 lombok 则删依赖+annotationProcessorPaths
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -60,7 +60,7 @@
 
     <properties>
         <!-- ═══ 第一段: 基础属性（自然排序）═══ -->
-        <!-- {JDK_VERSION}: 8 / 17 / 21；禁用 1.8（release 参数语法兼容） -->
+        <!-- {JDK_VERSION}: 1.8 / 17 / 21；1.8 全版本兼容（maven-compiler-plugin 3.15.0 + JDK8 下 8 有问题） -->
         <java.version>{JDK_VERSION}</java.version>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven.version>3.0</maven.version>
@@ -68,7 +68,7 @@
 
         <!-- ═══ 第二段: Dependency versions（自然排序）═══ -->
         <!-- 外部依赖示例（按实际增删）:
-        <jackson.version>2.18.9</jackson.version>
+        <jackson-bom.version>2.18.9</jackson-bom.version>       ← BOM 统一管理 Jackson 版本
         <okhttp3.version>4.12.0</okhttp3.version>
         -->
         <lombok.version>1.18.46</lombok.version>
@@ -98,6 +98,17 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- ★ Jackson BOM：统一管理所有 Jackson 模块版本（有 Jackson 依赖时必加）★ -->
+            <!-- 2.x: com.fasterxml.jackson:jackson-bom  3.x: tools.jackson:jackson-bom -->
+            <!--
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            -->
             <!-- ★ 被集成的外部库（本组件封装的目标）★ -->
             <dependency>
                 <groupId>{EXTERNAL_GROUP}</groupId>
