@@ -1,52 +1,68 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!--
-  easy4j Spring Boot Starter 标准 POM 模板
-  参照: openclaw-spring-boot-starter/pom.xml @ 2.7.x (commit b091ee4)
+  Spring Boot Starter 标准 POM 模板（组织无关通用版）
 
-  使用说明:
-  1. 替换 {ARTIFACT}、{DESCRIPTION}、{LINE}（分支线如 2.7）、{SDK_ARTIFACT}、{SDK_LINE}
-  2. parent.version / java.version 按 §2.1 分支矩阵填写
-  3. java.version 用 8/17/21（禁用 1.8，兼容 maven-compiler-plugin 3.15.0）
-  4. 第三方依赖版本按项目实际增删，保持自然排序
-  5. 项目无 lombok 依赖时，删除 compiler 的 annotationProcessorPaths 块
+  占位符说明（使用前全部替换）:
+  ─────────────────────────────────────────────────────────────
+  {GROUP_ID}          组织 groupId（如 io.github.easy4j / com.acme）
+  {ARTIFACT}          starter 名（如 redisson → redisson-spring-boot-starter）
+  {DESCRIPTION}       一句话描述被集成的组件
+  {LINE}              分支线（2.3 / 2.7 / 3.0 ... 4.1）
+  {SB_PARENT_VERSION} 该分支的 Spring Boot parent 版本（见 SKILL.md §2 矩阵）
+  {JDK_VERSION}       该分支的 JDK（8 / 17 / 21；禁用 1.8）
+  {EXTERNAL_GROUP}    ★ 被集成的外部组件 groupId   ★
+  {EXTERNAL_ARTIFACT} ★ 被集成的外部组件 artifactId ★
+  {EXTERNAL_VERSION}  ★ 被集成的外部组件版本       ★
+  ─────────────────────────────────────────────────────────────
+  ★ 三项即「本 starter 封装的目标库」：可能是 okhttp、redisson、kafka-client、
+    自研 SDK……按实际替换；不需要的示例块整段删除。
+
+  其他规则:
+  - 项目无 lombok 依赖 → 删除 lombok 依赖 + compiler 的 annotationProcessorPaths 块
+  - distributionManagement 的仓库地址按组织实际填写
+  - 发布渠道：nexus-staging（传统 OSSRH）与 central-publishing（Central Portal）
+    二选一或并存，只用其一时删除另一个插件
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- {按分支矩阵}: 2.3.12.RELEASE / 2.7.18 / 3.0.13 / 3.1.12 / 3.2.12 / 3.3.13 / 3.4.13 / 3.5.16 / 4.0.7 / 4.1.0 -->
+    <!-- {SB_PARENT_VERSION}: 2.3.12.RELEASE / 2.7.18 / 3.0.13 / 3.1.12 / 3.2.12 /
+         3.3.13 / 3.4.13 / 3.5.16 / 4.0.7 / 4.1.0（按分支矩阵） -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.18</version>
+        <version>{SB_PARENT_VERSION}</version>
         <relativePath/>
     </parent>
 
-    <groupId>io.github.easy4j</groupId>
+    <groupId>{GROUP_ID}</groupId>
     <artifactId>{ARTIFACT}-spring-boot-starter</artifactId>
     <!-- {LINE}.x.20260630-SNAPSHOT；正式发布时去 -SNAPSHOT -->
-    <version>2.7.x.20260630-SNAPSHOT</version>
+    <version>{LINE}.x.20260630-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Spring Boot starter for {DESCRIPTION} (line {LINE}.x; compile JDK {8|17|21})</description>
-    <url>https://github.com/easy-4-java/${project.artifactId}</url>
+    <description>Spring Boot starter for {DESCRIPTION} (line {LINE}.x; compile JDK {JDK_VERSION})</description>
+    <url>https://github.com/{ORG}/{project.artifactId}</url>
 
     <properties>
         <!-- ═══ 第一段: 基础属性（自然排序）═══ -->
-        <!-- {按分支矩阵}: 8 / 17 / 21；禁用 1.8 -->
-        <java.version>8</java.version>
+        <!-- {JDK_VERSION}: 8 / 17 / 21；禁用 1.8（compiler 3.15.0 兼容） -->
+        <java.version>{JDK_VERSION}</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- ═══ 第二段: Third-Party Dependencies（自然排序）═══ -->
-        <commons-io.version>2.22.0</commons-io.version>
-        <!-- {SDK_LINE} 按分支矩阵: 2.3.x→1.0.x / 2.7.x→2.0.x / 3.x→3.x / 4.x→4.x -->
-        <{SDK_ARTIFACT}.version>{SDK_LINE}.x.20260630-SNAPSHOT</{SDK_ARTIFACT}.version>
+        <!-- ★ 只放「本 starter 集成的外部组件」及其直接必需依赖的版本 ★ -->
+        <!-- 示例（按实际增删，勿照抄）:
         <okhttp.version>4.12.0</okhttp.version>
-        <slf4j.version>2.0.18</slf4j.version>
+        <redisson.version>3.27.0</redisson.version>
+        <kafka-clients.version>3.7.0</kafka-clients.version>
+        -->
+        <{external-artifact-placeholder}.version>{EXTERNAL_VERSION}</{external-artifact-placeholder}.version>
 
         <!-- ═══ 第三段: Maven Plugin Dependencies（自然排序）═══ -->
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
@@ -75,6 +91,8 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- ★ 被集成组件若有 BOM 则在此 import；无 BOM 则直接管理版本 ★ -->
+            <!-- 示例:
             <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp-bom</artifactId>
@@ -82,84 +100,65 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            -->
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons-io.version}</version>
-                <scope>test</scope>
+                <groupId>{EXTERNAL_GROUP}</groupId>
+                <artifactId>{EXTERNAL_ARTIFACT}</artifactId>
+                <version>{EXTERNAL_VERSION}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
-        <!-- For Spring Boot -->
+        <!-- ═══ ① Spring Boot 必需四件套（所有 starter 一致）═══ -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
-        <!-- For Spring Boot AutoConfiguration -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
-        <!-- For Spring Boot Configuration Processor -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
-        <!-- Source: https://github.com/easy-4-java/{SDK_ARTIFACT} — easy4j {SDK_ARTIFACT} -->
+
+        <!-- ═══ ② 被集成的外部组件（本 starter 的存在意义）═══ -->
+        <!-- ★ 替换为实际依赖；这是唯一的"业务依赖"，勿混入通用库 ★ -->
         <dependency>
-            <groupId>io.github.easy4j</groupId>
-            <artifactId>{SDK_ARTIFACT}</artifactId>
-            <version>${{SDK_ARTIFACT}.version}</version>
+            <groupId>{EXTERNAL_GROUP}</groupId>
+            <artifactId>{EXTERNAL_ARTIFACT}</artifactId>
         </dependency>
-        <!-- For OkHttp -->
-        <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
-        </dependency>
-        <!-- For Spring Boot Test -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- For Slf4j -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <!-- For Lombok（项目无 lombok 则删除本依赖与 compiler 的 annotationProcessorPaths）-->
+
+        <!-- ═══ ③ 编译期工具（按需；无 lombok 则连同 compiler 注解路径一起删）═══ -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!-- For JUnit Jupiter -->
+
+        <!-- ═══ ④ 测试（Spring Boot Test 已含 JUnit5/AssertJ/Mockito）═══ -->
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- For Commons IO -->
+        <!-- 测试期日志实现（按需）:
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
         </dependency>
+        -->
     </dependencies>
 
+    <!-- ═══ 按组织实际填写（形态固定：release + snapshot 双仓库）═══ -->
     <distributionManagement>
         <repository>
-            <id>2624322-release-6F6h6R</id>
-            <url>https://packages.aliyun.com/6927b116e6c3e0425dbdf60d/maven/2624322-release-6f6h6r</url>
+            <id>{release-repo-id}</id>
+            <url>{release-repo-url}</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -168,8 +167,8 @@
             </snapshots>
         </repository>
         <snapshotRepository>
-            <id>2624322-snapshot-3EoOv3</id>
-            <url>https://packages.aliyun.com/6927b116e6c3e0425dbdf60d/maven/2624322-snapshot-3eoov3</url>
+            <id>{snapshot-repo-id}</id>
+            <url>{snapshot-repo-url}</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
@@ -193,6 +192,7 @@
                         <target>${java.version}</target>
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <maxmem>512M</maxmem>
+                        <!-- 项目无 lombok 则删除以下 annotationProcessorPaths 块 -->
                         <annotationProcessorPaths>
                             <path>
                                 <groupId>org.projectlombok</groupId>
@@ -289,6 +289,7 @@
                         <skip>false</skip>
                         <skipTests>false</skipTests>
                         <!--suppress UnresolvedMavenProperty -->
+                        <!-- ${argLine} 为 JaCoCo agent 注入点，不可省略 -->
                         <argLine>${argLine} -Xmx1024m -Dfile.encoding=UTF-8</argLine>
                         <additionalClasspathElements>
                             <additionalClasspathElement>${basedir}/target/test-classes</additionalClasspathElement>
@@ -337,7 +338,7 @@
                         </execution>
                     </executions>
                 </plugin>
-                <!-- 将制品 staging 至 OSS Sonatype Nexus -->
+                <!-- 将制品 staging 至 OSS Sonatype Nexus（传统 OSSRH 发布；不用则删） -->
                 <plugin>
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -352,7 +353,7 @@
                         <detectBuildFailures>true</detectBuildFailures>
                     </configuration>
                 </plugin>
-                <!-- 中央仓库发布插件: 将制品发布至 Maven Central -->
+                <!-- 中央仓库发布插件: 将制品发布至 Maven Central（Central Portal；不用则删） -->
                 <plugin>
                     <groupId>org.sonatype.central</groupId>
                     <artifactId>central-publishing-maven-plugin</artifactId>
