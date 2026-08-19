@@ -77,6 +77,10 @@ license: Apache-2.0
 
 版本：`{line}.x.{yyyyMMdd}` ↔ `-SNAPSHOT`；同步法：`git checkout <src> -- src/ README.md`（不含 pom）。
 
+## 新建/核对清单（8 步）
+
+复制 assets/pom-template.xml → 替换占位符 → 按分支填 version/java.version（无 parent，lombok 显式版本）→ 核对三段式 → 源码三件套（Client/Config/能力域）→ 测试 → `mvn clean verify` → 多分支创建。完整演练见 [examples/create-component.md](examples/create-component.md)。
+
 ## References（按需加载）
 
 | 文件 | 何时读 |

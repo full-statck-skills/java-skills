@@ -69,6 +69,10 @@ parent → 坐标 → name/description/url
 - 源码：`XxxAutoConfiguration` + `XxxProperties`(@ConfigurationProperties) + `XxxTemplate`
 - 测试：`XxxAutoConfigurationTest`(ApplicationContextRunner) + `XxxPropertiesTest` + 模板测试
 
+## 新建/核对清单（8 步）
+
+复制 assets/pom-template.xml → 替换占位符 → 按分支矩阵填 parent/java.version → 核对 properties 三段式 → 源码三件套 → 测试三件套 → `mvn clean verify` 通过 → 十分支创建。完整演练与逐项勾选清单见 [examples/create-new-starter.md](examples/create-new-starter.md)。
+
 ## References（按需加载）
 
 | 文件 | 何时读 |
