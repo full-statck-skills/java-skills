@@ -46,6 +46,36 @@
     <description>Spring Boot starter for {DESCRIPTION} (line {LINE}.x; compile JDK {JDK_VERSION})</description>
     <url>https://github.com/{ORG}/{project.artifactId}</url>
 
+    <!-- ═══ 项目元数据（发布 Maven Central 必需）═══ -->
+    <!-- 开源协议采用 Apache 2.0 协议 -->
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <!-- 源码仓库（SCM）信息 -->
+    <scm>
+        <connection>scm:git:https://github.com/{ORG}/{project.artifactId}.git</connection>
+        <developerConnection>scm:git:https://github.com/{ORG}/{project.artifactId}.git</developerConnection>
+        <url>https://github.com/{ORG}/{project.artifactId}</url>
+        <tag>${project.artifactId}</tag>
+    </scm>
+
+    <!-- 开发者信息（{DEV_NAME}/{DEV_EMAIL} 按项目实际替换） -->
+    <developers>
+        <developer>
+            <name>{DEV_NAME}</name>
+            <email>{DEV_EMAIL}</email>
+            <url>{DEV_URL}</url>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+
     <properties>
         <!-- ═══ 第一段: 基础属性（自然排序）═══ -->
         <!-- {JDK_VERSION}: 8 / 17 / 21；禁用 1.8（compiler 3.15.0 兼容） -->
@@ -155,6 +185,7 @@
     </dependencies>
 
     <!-- ═══ 按组织实际填写（形态固定：release + snapshot 双仓库）═══ -->
+    <!-- 制品发布仓库配置（distributionManagement） -->
     <distributionManagement>
         <repository>
             <id>{release-repo-id}</id>
@@ -179,6 +210,7 @@
         </snapshotRepository>
     </distributionManagement>
 
+    <!-- 构建配置（Build） -->
     <build>
         <pluginManagement>
             <plugins>

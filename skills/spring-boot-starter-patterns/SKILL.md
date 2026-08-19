@@ -17,6 +17,9 @@ description: 通用 Spring Boot Starter 开发规范（组织无关）：标准 
 ├── <parent>                          # spring-boot-starter-parent（版本按分支矩阵）
 ├── 坐标                               # groupId / artifactId / version / packaging
 ├── <name> / <description> / <url>    # name 用 ${project.groupId}:${project.artifactId}
+├── <licenses>                        # 开源协议（Apache 2.0）；发布 Central 必需（见 1.1b）
+├── <scm>                             # 源码仓库信息；发布 Central 必需（见 1.1b）
+├── <developers>                      # 开发者信息；发布 Central 必需（见 1.1b）
 ├── <properties>                      # 三段式分类（见 1.2）
 ├── <dependencyManagement>            # BOM 导入 + 版本管理
 ├── <dependencies>                    # 实际依赖（带 <!-- For Xxx --> 注释）
@@ -24,6 +27,43 @@ description: 通用 Spring Boot Starter 开发规范（组织无关）：标准 
 ├── <build>                           # 完整：pluginManagement + plugins（见 1.3）
 └── <profiles>                        # 完整：disable-javadoc-doclint + release（见 1.4）
 ```
+
+### 1.1b 项目元数据三段（licenses / scm / developers）
+
+发布 Maven Central 的**必需元数据**，每段配一行中文注释说明，scm/developers 用 `${project.artifactId}` 参数化（参照 openclaw-java-sdk/pom.xml）：
+
+```xml
+    <!-- 开源协议采用 Apache 2.0 协议 -->
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <!-- 源码仓库（SCM）信息 -->
+    <scm>
+        <connection>scm:git:https://github.com/{ORG}/${project.artifactId}.git</connection>
+        <developerConnection>scm:git:https://github.com/{ORG}/${project.artifactId}.git</developerConnection>
+        <url>https://github.com/{ORG}/${project.artifactId}</url>
+        <tag>${project.artifactId}</tag>
+    </scm>
+
+    <!-- 开发者信息 -->
+    <developers>
+        <developer>
+            <name>{DEV_NAME}</name>
+            <email>{DEV_EMAIL}</email>
+            <url>{DEV_URL}</url>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+```
+
+`{ORG}` 按项目实际 GitHub 组织替换。标准化已有 pom 时**保留原值**（developer 可能不同），仅补齐缺失段落与注释。distributionManagement 与 build 之前同样加段落注释：`<!-- 制品发布仓库配置（distributionManagement） -->`、`<!-- 构建配置（Build） -->`。
 
 ### 1.2 properties 三段式分类 + 自然排序
 
