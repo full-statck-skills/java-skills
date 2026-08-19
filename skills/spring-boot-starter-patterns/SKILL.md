@@ -83,7 +83,8 @@ parent → 坐标 → name/description/url
 | [references/maven4.md](references/maven4.md) | 用 Maven 4 构建时：M3/M4 差异、运行 JDK 17+、maven.version 基线与 enforcer 区间、consumer POM、wrapper 迁移、CI 双轨 |
 | [examples/create-new-starter.md](examples/create-new-starter.md) | 从零新建 starter 的 8 步完整演练（含验收标准） |
 | [examples/maven4-migration.md](examples/maven4-migration.md) | 迁 Maven 4 时：双轨 enforcer、wrapper 切换、M4+JDK21 验证 release 8、consumer POM 检查、CI 双轨、按需升 model 4.1.0 |
-| [assets/pom-template.xml](assets/pom-template.xml) | 直接复制使用的带占位符模板（XML 校验通过） |
+| [assets/pom-template.xml](assets/pom-template.xml) | Maven 3 / model 4.0.0 模板（M3/M4 双轨，XML 校验通过） |
+| [assets/pom-template-maven4.xml](assets/pom-template-maven4.xml) | Maven 4 / model 4.1.0 模板（enforcer [4.0.0,)、session scope 示例；仅 M4 可构建） |
 
 ## 何时用本 skill vs java-component-patterns
 
