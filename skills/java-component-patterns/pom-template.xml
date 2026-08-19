@@ -108,7 +108,7 @@
             <dependency>
                 <groupId>{GROUP_ID}</groupId>
                 <artifactId>{INTERNAL_ARTIFACT}</artifactId>
-                <version>${{{INTERNAL_ARTIFACT}.version}}</version>
+                <version>${{INTERNAL_ARTIFACT}.version}</version>
             </dependency>
             -->
             <dependency>
