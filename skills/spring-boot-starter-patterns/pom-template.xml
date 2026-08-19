@@ -92,7 +92,8 @@
         <redisson.version>3.27.0</redisson.version>
         <kafka-clients.version>3.7.0</kafka-clients.version>
         -->
-        <{external-artifact-placeholder}.version>{EXTERNAL_VERSION}</{external-artifact-placeholder}.version>
+        <!-- 被集成组件的版本属性（命名为 <组件名>.version 形式），如：
+        <my-component.version>{EXTERNAL_VERSION}</my-component.version> -->
 
         <!-- ═══ 第三段: Maven Plugin Dependencies（自然排序）═══ -->
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
